@@ -1,3 +1,5 @@
+from pico2d import *
+
 objects = [[] for _ in range(4)]
 
 
@@ -18,7 +20,7 @@ def render():
     for layer in objects:
         for o in layer:
             o.draw()
-
+    delay(0.01)
 
 def remove_object(o):
     for layer in objects:
