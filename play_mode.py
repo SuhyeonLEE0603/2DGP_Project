@@ -21,6 +21,7 @@ def init():
 
 
 def update():
+    game_world.update()
     pass
 
 
