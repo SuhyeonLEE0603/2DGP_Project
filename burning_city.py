@@ -10,11 +10,12 @@ class Burning_city:
         self.x = x
         self.y = y
         os.chdir("source/Background/burning_city")
+        self.image = load_image(f"{self.t}.png")
+
 
     def draw(self):
         self.image.draw(self.x, self.y)
 
     def update(self):
-        self.image = load_image(f"{self.t}.png")
         self.frame = (self.frame + 1) % 8
         pass
