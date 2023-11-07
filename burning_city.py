@@ -15,14 +15,14 @@ class Burning_city:
             Burning_city.images = [load_image("./source/Background/burning_city/" + "%d" % i + ".png") for i in
                                    range(0, 7)]
 
-    def __init__(self, x=400, y=300):
+    def __init__(self, x=400, y=220):
         self.frame = 0
         self.x = x
         self.y = y
         self.load_iamges()
 
     def draw(self):
-        Burning_city.images[int(self.frame)].draw(self.x, self.y)
+        Burning_city.images[int(self.frame)].draw(self.x, self.y, 2400, 1360)
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
