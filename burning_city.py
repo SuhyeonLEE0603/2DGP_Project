@@ -1,21 +1,29 @@
 from pico2d import load_image
-import os
+import game_framework
+
+# burning city action speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 7.0
 
 
 class Burning_city:
+    images = None
+
+    def load_iamges(self):
+        if Burning_city.images == None:
+            Burning_city.images = [load_image("./source/Background/burning_city/" + "%d" % i + ".png") for i in
+                                   range(0, 7)]
 
     def __init__(self, x=400, y=300):
         self.frame = 0
         self.x = x
         self.y = y
-        os.chdir("source/Background/burning_city")
-        self.image = load_image(f"{self.frame}.png")
-
+        self.load_iamges()
 
     def draw(self):
-        self.image.draw(self.x, self.y)
+        Burning_city.images[int(self.frame)].draw(self.x, self.y)
 
     def update(self):
-        self.image = load_image(f"{self.frame}.png")
-        self.frame = (self.frame + 1) % 8
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
         pass
