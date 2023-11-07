@@ -1,6 +1,7 @@
 from pico2d import *
 import game_world
 import game_framework
+from hero import Hero
 from burning_city import Burning_city
 
 
@@ -16,8 +17,14 @@ def handle_events():
 
 
 def init():
+    global back_ground
+    global hero
+
     back_ground = Burning_city()
     game_world.add_object(back_ground)
+
+    hero = Hero()
+    game_world.add_object(hero)
 
 
 def update():
