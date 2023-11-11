@@ -24,7 +24,7 @@ def init():
     game_world.add_object(back_ground)
 
     hero = Hero()
-    game_world.add_object(hero)
+    game_world.add_object(hero, 1)
 
 
 def update():
