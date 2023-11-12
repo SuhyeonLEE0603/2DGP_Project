@@ -1,6 +1,9 @@
 from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, \
     draw_rectangle
 import math
+
+from sdl2 import SDLK_a
+
 import game_world
 import game_framework
 
@@ -24,6 +27,11 @@ def left_up(e):
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
+def a_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
+
+def a_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a
 
 # Hero Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -36,25 +44,33 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_WALK = 5
+FRAMES_PER_ATTACK = 5
 
 
 class Attack:
 
     @staticmethod
     def enter(hero, e):
+        hero.state_machine.prev_state = Attack
         pass
 
     @staticmethod
     def exit(hero, e):
+
         pass
 
     @staticmethod
     def do(hero):
+        hero.frame = (hero.frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 3
         pass
 
 
     @staticmethod
     def draw(hero):
+        if hero.face_dir == -1:
+            hero.AttackImage[int(hero.frame)].draw(hero.x + 10, hero.y + 75)
+        else:
+            hero.AttackImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
         pass
 
 class Jump:
@@ -79,7 +95,7 @@ class Stand:
 
     @staticmethod
     def enter(hero, e):
-        print('Stand Enter')
+        hero.state_machine.prev_state = Stand
         pass
 
     @staticmethod
@@ -104,11 +120,11 @@ class Walk:
 
     @staticmethod
     def enter(hero, e):
+        hero.state_machine.prev_state = Walk
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
             hero.dir, hero.face_dir = 1, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
             hero.dir, hero.face_dir = -1, -1
-        print('Walk Enter')
 
     @staticmethod
     def exit(hero, e):
@@ -118,12 +134,11 @@ class Walk:
     def do(hero):
         hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         hero.x = clamp(25, hero.x, 1600 - 25)
-        hero.frame = (hero.frame + FRAMES_PER_WALK * ACTION_PER_TIME * game_framework.frame_time) % 5
-        print('Walk Do')
+        hero.frame = (hero.frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 5
 
     @staticmethod
     def draw(hero):
-        if hero.face_dir == -1:
+        if hero.dir == -1:
             hero.WalkingImage[int(hero.frame)].draw(hero.x, hero.y + 75)
         else:
             hero.WalkingImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x, hero.y + 75)
@@ -134,10 +149,12 @@ class StateMachine:
     def __init__(self, hero):
         self.hero = hero
         self.cur_state = Stand
+        self.perv_state = None
         self.transitions = {
-            Stand: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, space_down: Jump},
-            Walk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk},
-            Jump: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk}
+            Stand: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, space_down: Jump, a_down: Attack},
+            Walk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk, a_down: Attack},
+            Jump: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk},
+            Attack: {right_down: Walk, left_down: Walk, right_up: Stand, left_up: Stand, a_up: Walk if self.perv_state == Walk else Stand}
         }
 
     def start(self):
