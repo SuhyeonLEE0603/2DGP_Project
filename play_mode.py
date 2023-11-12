@@ -3,6 +3,7 @@ import game_world
 import game_framework
 from hero import Hero
 from burning_city import Burning_city
+from monster import Monster
 
 
 def handle_events():
@@ -20,6 +21,7 @@ def handle_events():
 def init():
     global back_ground
     global hero
+    global monster
 
     back_ground = Burning_city()
     game_world.add_object(back_ground)
@@ -27,7 +29,8 @@ def init():
     hero = Hero()
     game_world.add_object(hero, 1)
 
-
+    monster = Monster()
+    game_world.add_object(monster, 1)
 def update():
     game_world.update()
     pass
