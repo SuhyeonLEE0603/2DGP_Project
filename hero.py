@@ -213,7 +213,7 @@ class Hero:
                                 range(7)]
 
     def __init__(self):
-        self.x, self.y = 100, 200
+        self.x, self.y = 100, 180
         self.frame = 0
         self.skill_frame = 0
         self.face_dir = 1
