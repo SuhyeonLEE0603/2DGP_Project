@@ -2,8 +2,8 @@ from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYU
     draw_rectangle
 import math
 
-from sdl2 import SDLK_a
-
+from sdl2 import SDLK_a, SDLK_s
+import skill
 import game_world
 import game_framework
 
@@ -27,11 +27,19 @@ def left_up(e):
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
+
 def a_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
 
+
 def a_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a
+
+def s_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s
+
+def skill_over(e):
+    return e[0] == 'SKILL_OVER'
 
 # Hero Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -45,25 +53,24 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_WALK = 5
 FRAMES_PER_ATTACK = 5
+FRAMES_PER_SKILL = 5
 
 
 class Attack:
 
     @staticmethod
     def enter(hero, e):
-        hero.state_machine.prev_state = Attack
         pass
 
     @staticmethod
     def exit(hero, e):
-
+        hero.state_machine.prev_state = Attack
         pass
 
     @staticmethod
     def do(hero):
         hero.frame = (hero.frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 3
         pass
-
 
     @staticmethod
     def draw(hero):
@@ -73,7 +80,7 @@ class Attack:
             hero.AttackImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
         pass
 
-class Jump:
+class Skill:
 
     @staticmethod
     def enter(hero, e):
@@ -81,25 +88,36 @@ class Jump:
 
     @staticmethod
     def exit(hero, e):
+        hero.skill_frame = 0
+        hero.state_machine.prev_state = Skill
+        hero.fire()
         pass
 
     @staticmethod
     def do(hero):
+        hero.skill_frame = (hero.skill_frame + FRAMES_PER_SKILL * ACTION_PER_TIME * game_framework.frame_time) % 5
+        if hero.skill_frame > 4.9:
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
         pass
 
     @staticmethod
     def draw(hero):
+        if hero.face_dir == -1:
+            hero.SkillImage[int(hero.skill_frame)].draw(hero.x + 10, hero.y + 75)
+        else:
+            hero.SkillImage[int(hero.skill_frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
         pass
+
 
 class Stand:
 
     @staticmethod
     def enter(hero, e):
-        hero.state_machine.prev_state = Stand
         pass
 
     @staticmethod
     def exit(hero, e):
+        hero.state_machine.prev_state = Stand
         pass
 
     @staticmethod
@@ -144,17 +162,18 @@ class Walk:
             hero.WalkingImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x, hero.y + 75)
 
 
-
 class StateMachine:
     def __init__(self, hero):
         self.hero = hero
         self.cur_state = Stand
         self.perv_state = None
         self.transitions = {
-            Stand: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, space_down: Jump, a_down: Attack},
-            Walk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk, a_down: Attack},
-            Jump: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk},
-            Attack: {right_down: Walk, left_down: Walk, right_up: Stand, left_up: Stand, a_up: Walk if self.perv_state == Walk else Stand}
+            Stand: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, a_down: Attack, s_down: Skill},
+            Walk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk,
+                   a_down: Attack, s_down: Skill},
+            Attack: {right_down: Walk, left_down: Walk, right_up: Stand, left_up: Stand,
+                     a_up: Walk if self.perv_state == Walk else Stand},
+            Skill: {right_down: Walk, left_down: Walk, right_up: Walk, left_up: Walk, skill_over: Stand}
         }
 
     def start(self):
@@ -183,19 +202,29 @@ class Hero:
 
     def load_images(self):
         if Hero.images == None:
-            Hero.images = load_image('./source/Humans/Knight1/1.png')
-            self.WalkingImage = [load_image("./source/Humans/Knight1/sprite/walking/" + "%d" % i + ".png") for i in range(5)]
-            self.AttackImage = [load_image("./source/Humans/Knight1/sprite/attack/" + "%d" % i + ".png") for i in range(3)]
-            self.SkillImage = [load_image("./source/Humans/Knight1/sprite/attack1/" + "%d" % i + ".png") for i in range(1, 6)]
-            self.Skill2Image = [load_image("./source/Humans/Knight1/sprite/attack2/" + "%d" % i + ".png") for i in range(7)]
+            Hero.images = load_image('./source/Humans/Knight1/0.png')
+            self.WalkingImage = [load_image("./source/Humans/Knight1/sprite/walking/" + "%d" % i + ".png") for i in
+                                 range(5)]
+            self.AttackImage = [load_image("./source/Humans/Knight1/sprite/attack/" + "%d" % i + ".png") for i in
+                                range(3)]
+            self.SkillImage = [load_image("./source/Humans/Knight1/sprite/attack1/" + "%d" % i + ".png") for i in
+                               range(5)]
+            self.Skill2Image = [load_image("./source/Humans/Knight1/sprite/attack2/" + "%d" % i + ".png") for i in
+                                range(7)]
+
     def __init__(self):
         self.x, self.y = 100, 200
         self.frame = 0
+        self.skill_frame = 0
         self.face_dir = 1
         self.dir = 0
         self.load_images()
         self.state_machine = StateMachine(self)
         self.state_machine.start()
+
+    def fire(self):
+        fire = skill.Skill(self.x, self.y, self.face_dir * 10)
+        game_world.add_object(fire)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
