@@ -25,13 +25,6 @@ def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
 
-def time_out(e):
-    return e[0] == 'TIME_OUT'
-
-
-# time_out = lambda e : e[0] == 'TIME_OUT'
-
-
 # Hero Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 RUN_SPEED_KMPH = 20.0  # Km / Hour
@@ -42,7 +35,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 # Hero Action Speed
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 8
+FRAMES_PER_WALK = 5
 
 
 class Attack:
@@ -86,6 +79,7 @@ class Stand:
 
     @staticmethod
     def enter(hero, e):
+        print('Stand Enter')
         pass
 
     @staticmethod
@@ -94,6 +88,7 @@ class Stand:
 
     @staticmethod
     def do(hero):
+        print('Stand Do')
         pass
 
     @staticmethod
@@ -110,9 +105,10 @@ class Walk:
     @staticmethod
     def enter(hero, e):
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-            hero.dir, hero.action, hero.face_dir = 1, 1, 1
+            hero.dir, hero.face_dir = 1, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            hero.dir, hero.action, hero.face_dir = -1, 0, -1
+            hero.dir, hero.face_dir = -1, -1
+        print('Walk Enter')
 
     @staticmethod
     def exit(hero, e):
@@ -122,11 +118,16 @@ class Walk:
     def do(hero):
         hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         hero.x = clamp(25, hero.x, 1600 - 25)
-        hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        hero.frame = (hero.frame + FRAMES_PER_WALK * ACTION_PER_TIME * game_framework.frame_time) % 5
+        print('Walk Do')
 
     @staticmethod
     def draw(hero):
-        hero.image.draw(int(hero.frame) * 100, hero.action * 100, 100, 100, hero.x, hero.y)
+        if hero.face_dir == -1:
+            hero.WalkingImage[int(hero.frame)].draw(hero.x, hero.y + 75)
+        else:
+            hero.WalkingImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x, hero.y + 75)
+
 
 
 class StateMachine:
@@ -146,6 +147,7 @@ class StateMachine:
         self.cur_state.do(self.hero)
 
     def handle_event(self, e):
+        print('Check Event')
         for check_event, next_state in self.transitions[self.cur_state].items():
             if check_event(e):
                 self.cur_state.exit(self.hero, e)
@@ -170,7 +172,7 @@ class Hero:
             self.SkillImage = [load_image("./source/Humans/Knight1/sprite/attack1/" + "%d" % i + ".png") for i in range(1, 6)]
             self.Skill2Image = [load_image("./source/Humans/Knight1/sprite/attack2/" + "%d" % i + ".png") for i in range(7)]
     def __init__(self):
-        self.x, self.y = 100, 150
+        self.x, self.y = 100, 200
         self.frame = 0
         self.face_dir = 1
         self.dir = 0
@@ -190,6 +192,3 @@ class Hero:
 
     def get_bb(self):
         return self.x - 35, self.y - 100, self.x + 35, self.y + 100  # 값 4개 짜리 튜플 1개
-
-
-    pass
