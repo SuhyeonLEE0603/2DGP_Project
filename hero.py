@@ -2,11 +2,13 @@ from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYU
     draw_rectangle
 import math
 
-from sdl2 import SDLK_a, SDLK_s
+from sdl2 import SDLK_a, SDLK_s, SDLK_d
+
+import play_mode
 import skill
 import game_world
 import game_framework
-
+from hp_bar import Hp_bar
 
 def right_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
@@ -35,15 +37,24 @@ def a_down(e):
 def a_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a
 
+
 def s_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s
+
+def d_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d
+
 
 def skill_over(e):
     return e[0] == 'SKILL_OVER'
 
+def attack_over(e):
+    return e[0] == 'ATTACK_OVER'
+
+
 # Hero Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 20.0  # Km / Hour
+RUN_SPEED_KMPH = 50.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -54,6 +65,7 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_WALK = 5
 FRAMES_PER_ATTACK = 5
 FRAMES_PER_SKILL = 5
+FRAMES_PER_SKILL2 = 7
 
 
 class Attack:
@@ -64,21 +76,51 @@ class Attack:
 
     @staticmethod
     def exit(hero, e):
+        hero.attack_frame = 0
         hero.state_machine.prev_state = Attack
         pass
 
     @staticmethod
     def do(hero):
-        hero.frame = (hero.frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 3
+        hero.attack_frame = (hero.attack_frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 3
+        if hero.attack_frame > 2.9:
+            hero.state_machine.handle_event(('ATTACK_OVER', 0))
+
+    @staticmethod
+    def draw(hero):
+        if hero.face_dir == -1:
+            hero.AttackImage[int(hero.attack_frame)].draw(hero.x + 10, hero.y + 75)
+        else:
+            hero.AttackImage[int(hero.attack_frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
+
+class Skill2:
+
+    @staticmethod
+    def enter(hero, e):
+        pass
+
+    @staticmethod
+    def exit(hero, e):
+        hero.skill_frame = 0
+        hero.state_machine.prev_state = Skill
+        hero.fire()
+        pass
+
+    @staticmethod
+    def do(hero):
+        hero.skill_frame = (hero.skill_frame + FRAMES_PER_SKILL2 * ACTION_PER_TIME * game_framework.frame_time) % 7
+        if hero.skill_frame > 6.9:
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
         pass
 
     @staticmethod
     def draw(hero):
         if hero.face_dir == -1:
-            hero.AttackImage[int(hero.frame)].draw(hero.x + 10, hero.y + 75)
+            hero.Skill2Image[int(hero.skill_frame)].draw(hero.x + 10, hero.y + 75)
         else:
-            hero.AttackImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
+            hero.Skill2Image[int(hero.skill_frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
         pass
+
 
 class Skill:
 
@@ -122,7 +164,6 @@ class Stand:
 
     @staticmethod
     def do(hero):
-        print('Stand Do')
         pass
 
     @staticmethod
@@ -168,12 +209,12 @@ class StateMachine:
         self.cur_state = Stand
         self.perv_state = None
         self.transitions = {
-            Stand: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, a_down: Attack, s_down: Skill},
+            Stand: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, a_down: Attack, s_down: Skill, d_down: Skill2},
             Walk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk,
                    a_down: Attack, s_down: Skill},
-            Attack: {right_down: Walk, left_down: Walk, right_up: Stand, left_up: Stand,
-                     a_up: Walk if self.perv_state == Walk else Stand},
-            Skill: {right_down: Walk, left_down: Walk, right_up: Walk, left_up: Walk, skill_over: Stand}
+            Attack: {right_down: Walk, left_down: Walk, attack_over: Stand},
+            Skill: {right_down: Walk, left_down: Walk, skill_over: Stand},
+            Skill2: {skill_over: Stand}
         }
 
     def start(self):
@@ -183,7 +224,6 @@ class StateMachine:
         self.cur_state.do(self.hero)
 
     def handle_event(self, e):
-        print('Check Event')
         for check_event, next_state in self.transitions[self.cur_state].items():
             if check_event(e):
                 self.cur_state.exit(self.hero, e)
@@ -195,6 +235,7 @@ class StateMachine:
 
     def draw(self):
         self.cur_state.draw(self.hero)
+
 
 
 class Hero:
@@ -215,9 +256,11 @@ class Hero:
     def __init__(self):
         self.x, self.y = 100, 180
         self.frame = 0
+        self.attack_frame = 0
         self.skill_frame = 0
         self.face_dir = 1
         self.dir = 0
+        self.hp = Hp_bar(play_mode.HUMAN_HP)
         self.load_images()
         self.state_machine = StateMachine(self)
         self.state_machine.start()
@@ -234,6 +277,7 @@ class Hero:
 
     def draw(self):
         self.state_machine.draw()
+        self.hp.draw(self.x, self.y * 2)
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
 
     def get_bb(self):

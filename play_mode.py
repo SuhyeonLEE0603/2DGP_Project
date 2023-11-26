@@ -6,6 +6,9 @@ from hero import Hero
 from burning_city import Burning_city
 from monster import Monster
 
+HUMAN_HP = 0
+MONSTER_HP = 1
+BOSS_HP = 2
 
 def handle_events():
     global running

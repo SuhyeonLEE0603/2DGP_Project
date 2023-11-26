@@ -1,5 +1,6 @@
 from pico2d import load_image
 
+
 class Ground:
     image = None
 

@@ -5,6 +5,8 @@ import game_framework
 from pico2d import *
 
 import game_world
+import play_mode
+from hp_bar import Hp_bar
 
 # zombie Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -37,8 +39,9 @@ class Monster:
         self.load_images()
         self.frame = random.randint(0, 9)
         self.dir = random.choice([-1, 1])
-        self.size_x, self.size_y = 1200, 1000
+        self.size_x, self.size_y = 1400, 1000
         self.collision_cnt = 0
+        self.hp = Hp_bar(play_mode.MONSTER_HP)
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_WALKING * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_WALKING
@@ -56,6 +59,7 @@ class Monster:
         else:
             self.WalkingImage[int(self.frame)].draw(self.x, self.y, self.size_x, self.size_y)
         draw_rectangle(*self.get_bb())
+        self.hp.draw(self.x, self.y + 100)
 
     def handle_event(self, event):
         pass
