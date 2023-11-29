@@ -65,7 +65,7 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_WALK = 5
 FRAMES_PER_ATTACK = 5
 FRAMES_PER_SKILL = 5
-FRAMES_PER_SKILL2 = 7
+FRAMES_PER_SKILL2 = 5
 
 
 class Attack:
@@ -103,13 +103,12 @@ class Skill2:
     def exit(hero, e):
         hero.skill_frame = 0
         hero.state_machine.prev_state = Skill
-        hero.fire()
         pass
 
     @staticmethod
     def do(hero):
-        hero.skill_frame = (hero.skill_frame + FRAMES_PER_SKILL2 * ACTION_PER_TIME * game_framework.frame_time) % 7
-        if hero.skill_frame > 6.9:
+        hero.skill_frame = (hero.skill_frame + FRAMES_PER_SKILL2 * ACTION_PER_TIME * game_framework.frame_time)
+        if hero.skill_frame > 7:
             hero.state_machine.handle_event(('SKILL_OVER', 0))
         pass
 
@@ -266,7 +265,7 @@ class Hero:
         self.state_machine.start()
 
     def fire(self):
-        fire = skill.Skill(self.x, self.y, self.face_dir * 10)
+        fire = skill.Skill(self.x, self.y + 100, self.face_dir * 10)
         game_world.add_object(fire)
 
     def handle_event(self, event):

@@ -1,5 +1,7 @@
 import time
 
+frame_time = 0
+frame_sec = frame_time / 1000.0
 
 def change_mode(mode):
     global stack
@@ -45,6 +47,7 @@ def run(start_mode):
     start_mode.init()
 
     global frame_time
+
     frame_time = 0.0
     current_time = time.time()
     while running:
