@@ -2,13 +2,14 @@ from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYU
     draw_rectangle
 import math
 
-from sdl2 import SDLK_a, SDLK_s, SDLK_d
+from sdl2 import SDLK_a, SDLK_s, SDLK_d, SDLK_w
 
 import play_mode
 import skill
 import game_world
 import game_framework
 from hp_bar import Hp_bar
+
 
 def right_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
@@ -41,12 +42,21 @@ def a_up(e):
 def s_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s
 
+
 def d_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d
 
 
+def w_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_w
+
+
+def jump_over(e):
+    return e[0] == 'JUMP_OVER'
+
 def skill_over(e):
     return e[0] == 'SKILL_OVER'
+
 
 def attack_over(e):
     return e[0] == 'ATTACK_OVER'
@@ -92,6 +102,7 @@ class Attack:
             hero.AttackImage[int(hero.attack_frame)].draw(hero.x + 10, hero.y + 75)
         else:
             hero.AttackImage[int(hero.attack_frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
+
 
 class Skill2:
 
@@ -174,14 +185,48 @@ class Stand:
         pass
 
 
-class Walk:
+class Jump:
 
     @staticmethod
     def enter(hero, e):
-        hero.state_machine.prev_state = Walk
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
             hero.dir, hero.face_dir = 1, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
+            hero.dir, hero.face_dir = -1, -1
+
+        pass
+
+    @staticmethod
+    def exit(hero, e):
+        hero.state_machine.prev_state = Jump
+        hero.jump_time = 0
+        hero.state_machine.handle_event(('JUMP_OVER', 0))
+        pass
+
+    @staticmethod
+    def do(hero):
+        if hero.y >= 180:
+            hero.y += ((hero.jump_time * hero.jump_time * game_framework.gravity / 2)
+                       + hero.jump_speed * hero.jump_time)
+            hero.jump_time += game_framework.frame_time
+        else:
+            hero.y = 180
+
+    @staticmethod
+    def draw(hero):
+        if hero.face_dir == -1:
+            hero.images.draw(hero.x, hero.y)
+        else:
+            hero.images.composite_draw(math.radians(180), 'v', hero.x, hero.y)
+        pass
+
+
+class LeftWalk:
+
+    @staticmethod
+    def enter(hero, e):
+        hero.state_machine.prev_state = LeftWalk
+        if left_down(e) or right_up(e):  # 왼쪽으로 RUN
             hero.dir, hero.face_dir = -1, -1
 
     @staticmethod
@@ -198,7 +243,29 @@ class Walk:
     def draw(hero):
         if hero.dir == -1:
             hero.WalkingImage[int(hero.frame)].draw(hero.x, hero.y + 75)
-        else:
+
+
+class RightWalk:
+
+    @staticmethod
+    def enter(hero, e):
+        hero.state_machine.prev_state = RightWalk
+        if right_down(e) or left_up(e):  # 오른쪽으로 RUN
+            hero.dir, hero.face_dir = 1, 1
+
+    @staticmethod
+    def exit(hero, e):
+        pass
+
+    @staticmethod
+    def do(hero):
+        hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
+        hero.x = clamp(25, hero.x, 1600 - 25)
+        hero.frame = (hero.frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 5
+
+    @staticmethod
+    def draw(hero):
+        if hero.dir == 1:
             hero.WalkingImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x, hero.y + 75)
 
 
@@ -208,11 +275,15 @@ class StateMachine:
         self.cur_state = Stand
         self.perv_state = None
         self.transitions = {
-            Stand: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, a_down: Attack, s_down: Skill, d_down: Skill2},
-            Walk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: Walk,
-                   a_down: Attack, s_down: Skill},
-            Attack: {right_down: Walk, left_down: Walk, attack_over: Stand},
-            Skill: {right_down: Walk, left_down: Walk, skill_over: Stand},
+            Stand: {right_down: RightWalk, left_down: LeftWalk, left_up: RightWalk, right_up: LeftWalk, a_down: Attack,
+                    s_down: Skill, d_down: Skill2, w_down: Jump},
+            LeftWalk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: LeftWalk,
+                       a_down: Attack, s_down: Skill, w_down: Jump},
+            RightWalk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: RightWalk,
+                        a_down: Attack, s_down: Skill, w_down: Jump},
+            Jump: {jump_over: Stand},
+            Attack: {right_down: RightWalk, left_down: LeftWalk, attack_over: Stand},
+            Skill: {right_down: RightWalk, left_down: LeftWalk, skill_over: Stand},
             Skill2: {skill_over: Stand}
         }
 
@@ -230,11 +301,8 @@ class StateMachine:
                 self.cur_state.enter(self.hero, e)
                 return True
 
-        return False
-
     def draw(self):
         self.cur_state.draw(self.hero)
-
 
 
 class Hero:
@@ -259,13 +327,15 @@ class Hero:
         self.skill_frame = 0
         self.face_dir = 1
         self.dir = 0
+        self.jump_time = 0
+        self.jump_speed = 5
         self.hp = Hp_bar(play_mode.HUMAN_HP)
         self.load_images()
         self.state_machine = StateMachine(self)
         self.state_machine.start()
 
     def fire(self):
-        fire = skill.Skill(self.x, self.y + 100, self.face_dir * 10)
+        fire = skill.Skill(self.x, self.y + 100, 40, self.face_dir)
         game_world.add_object(fire)
 
     def handle_event(self, event):

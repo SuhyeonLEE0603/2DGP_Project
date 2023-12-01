@@ -2,6 +2,7 @@ import time
 
 frame_time = 0
 frame_sec = frame_time / 1000.0
+gravity = -9.8
 
 def change_mode(mode):
     global stack
