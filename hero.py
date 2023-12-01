@@ -189,19 +189,12 @@ class Jump:
 
     @staticmethod
     def enter(hero, e):
-        if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-            hero.dir, hero.face_dir = 1, 1
-        elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            hero.dir, hero.face_dir = -1, -1
-
         pass
 
     @staticmethod
     def exit(hero, e):
         hero.state_machine.prev_state = Jump
         hero.jump_time = 0
-        hero.state_machine.handle_event(('JUMP_OVER', 0))
-        pass
 
     @staticmethod
     def do(hero):
@@ -209,15 +202,21 @@ class Jump:
             hero.y += ((hero.jump_time * hero.jump_time * game_framework.gravity / 2)
                        + hero.jump_speed * hero.jump_time)
             hero.jump_time += game_framework.frame_time
+            if hero.state_machine.prev_state == RightWalk:
+                hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
+            elif hero.state_machine.prev_state == LeftWalk:
+                hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         else:
+            hero.state_machine.handle_event(('JUMP_OVER', 0))
             hero.y = 180
 
     @staticmethod
     def draw(hero):
         if hero.face_dir == -1:
-            hero.images.draw(hero.x, hero.y)
-        else:
-            hero.images.composite_draw(math.radians(180), 'v', hero.x, hero.y)
+            hero.WalkingImage[int(hero.frame)].draw(hero.x, hero.y + 75)
+        elif hero.face_dir == 1:
+            hero.WalkingImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x, hero.y + 75)
+
         pass
 
 
