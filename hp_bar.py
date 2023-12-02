@@ -10,19 +10,23 @@ class Hp_bar:
             Hp_bar.image = load_image("./source/Hp_bar.png")
 
     def __init__(self, object):
-        self.hp = 300
+        self.hero_hp = 100
+        self.monster_hp = 700
         self.frame = 0
         self.object = object
         self.load_iamges()
 
     def draw(self, x, y):
         if self.object == 0:
-            self.back_hp_bar = Hp_bar.image.clip_draw(0, 190, 300, 70, x, y, 200, 60)
-            self.hp_bar = Hp_bar.image.clip_draw(0, 480, self.hp, 70, x, y, 200, 60)
+            self.back_hp_bar = Hp_bar.image.clip_draw(0, 190, 500, 70, x, y)
+            self.hp_bar = Hp_bar.image.clip_draw(0, 480, self.hero_hp, 70, x, y)
         elif self.object == 1:
-            self.back_hp_bar = Hp_bar.image.clip_draw(0, 120, 300, 70, x, y, 200, 60)
-            self.hp_bar = Hp_bar.image.clip_draw(0, 410, self.hp, 70, x, y, 200, 60)
+            self.back_hp_bar = Hp_bar.image.clip_draw(0, 520, 500, 70, x, y, 200, 60)
+            self.hp_bar = Hp_bar.image.clip_draw(0, 410, self.monster_hp, 70, x, y, 200, 60)
 
-    def update(self):
-        # 충돌 처리되면 hp 감소
+    def update(self, hp):
+        if self.object == 0:
+            self.hero_hp -= hp
+        elif self.object == 1:
+            self.monster_hp -= hp
         pass

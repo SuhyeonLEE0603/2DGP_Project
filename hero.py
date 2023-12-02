@@ -64,7 +64,7 @@ def attack_over(e):
 
 # Hero Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 50.0  # Km / Hour
+RUN_SPEED_KMPH = 30.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -199,13 +199,14 @@ class Jump:
     @staticmethod
     def do(hero):
         if hero.y >= 180:
-            hero.y += ((hero.jump_time * hero.jump_time * game_framework.gravity / 2)
+            hero.y += ((hero.jump_time * hero.jump_time * game_framework.gravity)
                        + hero.jump_speed * hero.jump_time)
             hero.jump_time += game_framework.frame_time
             if hero.state_machine.prev_state == RightWalk:
                 hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
             elif hero.state_machine.prev_state == LeftWalk:
                 hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
+            hero.x = clamp(25, hero.x, 1600 - 25)
         else:
             hero.state_machine.handle_event(('JUMP_OVER', 0))
             hero.y = 180
@@ -327,7 +328,7 @@ class Hero:
         self.face_dir = 1
         self.dir = 0
         self.jump_time = 0
-        self.jump_speed = 5
+        self.jump_speed = 7
         self.hp = Hp_bar(play_mode.HUMAN_HP)
         self.load_images()
         self.state_machine = StateMachine(self)
@@ -345,8 +346,13 @@ class Hero:
 
     def draw(self):
         self.state_machine.draw()
-        self.hp.draw(self.x, self.y * 2)
+        self.hp.draw(300, 850)
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
 
     def get_bb(self):
         return self.x - 35, self.y - 100, self.x + 35, self.y + 100  # 값 4개 짜리 튜플 1개
+
+    def handle_collision(self, group, other):
+         if group == 'hero:monster':
+            self.hp.update(play_mode.BODY_DAMAGE)
+            pass

@@ -5,11 +5,12 @@ from ground import Ground
 from hero import Hero
 from burning_city import Burning_city
 from monster import Monster
+from hp_bar import Hp_bar
 
 HUMAN_HP = 0
 MONSTER_HP = 1
 BOSS_HP = 2
-
+BODY_DAMAGE = 50
 def handle_events():
     global running
 
@@ -27,6 +28,7 @@ def init():
     global hero
     global monster
     global ground
+    global hero_hp
 
     back_ground = Burning_city()
     game_world.add_object(back_ground)
@@ -36,6 +38,8 @@ def init():
 
     monster = Monster()
     game_world.add_object(monster, 2)
+    game_world.add_collision_pair('hero:monster', hero, None)
+
 
     grounds = [Ground(i * 200 + 100) for i in range(8)]
     game_world.add_objects(grounds, 1)
