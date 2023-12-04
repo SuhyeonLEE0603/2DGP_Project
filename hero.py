@@ -354,6 +354,6 @@ class Hero:
 
     def handle_collision(self, group, other):
          if group == 'hero:monster':
-            print('충돌')
+            print('데미지 입음')
             self.hp.update(play_mode.BODY_DAMAGE)
             pass
