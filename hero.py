@@ -9,6 +9,7 @@ import skill
 import game_world
 import game_framework
 from hp_bar import Hp_bar
+from skill2_icon import Skill2Icon
 from skill_icon import SkillIcon
 
 
@@ -109,12 +110,15 @@ class Skill2:
 
     @staticmethod
     def enter(hero, e):
-        pass
+        if hero.skill_icon2.run:
+            print('스킬2 쿨타임')
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
 
     @staticmethod
     def exit(hero, e):
         hero.skill_frame = 0
         hero.state_machine.prev_state = Skill
+        hero.skill_icon2.run_cool_time()
         pass
 
     @staticmethod
@@ -334,6 +338,7 @@ class Hero:
         self.jump_speed = 7
         self.hp = Hp_bar(play_mode.HUMAN_HP)
         self.skill_icon1 = SkillIcon()
+        self.skill_icon2 = Skill2Icon()
         self.load_images()
         self.state_machine = StateMachine(self)
         self.state_machine.start()
@@ -352,12 +357,14 @@ class Hero:
 
     def update(self):
         self.skill_icon1.update()
+        self.skill_icon2.update()
         self.state_machine.update()
 
     def draw(self):
         self.state_machine.draw()
         self.hp.draw(self.x + 100, self.y + 200)
         self.skill_icon1.draw(self.x - 100, self.y)
+        self.skill_icon2.draw(self.x - 50, self.y)
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
 
     def get_bb(self):
