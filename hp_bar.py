@@ -10,7 +10,7 @@ class Hp_bar:
             Hp_bar.image = load_image("./source/Hp_bar.png")
 
     def __init__(self, object):
-        self.hero_hp = 100
+        self.hero_hp = 500
         self.monster_hp = 700
         self.frame = 0
         self.object = object

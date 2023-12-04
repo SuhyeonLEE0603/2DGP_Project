@@ -10,10 +10,8 @@ from hp_bar import Hp_bar
 HUMAN_HP = 0
 MONSTER_HP = 1
 BOSS_HP = 2
-BODY_DAMAGE = 50
+BODY_DAMAGE = 1
 def handle_events():
-    global running
-
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -27,18 +25,19 @@ def init():
     global back_ground
     global hero
     global monster
-    global ground
+    global grounds
     global hero_hp
 
     back_ground = Burning_city()
-    game_world.add_object(back_ground)
+    game_world.add_object(back_ground, 0)
 
     hero = Hero()
     game_world.add_object(hero, 2)
+    game_world.add_collision_pair('hero:monster', hero, None)
 
     monster = Monster()
     game_world.add_object(monster, 2)
-    game_world.add_collision_pair('hero:monster', hero, None)
+    game_world.add_collision_pair('hero:monster', None, monster)
 
 
     grounds = [Ground(i * 200 + 100) for i in range(8)]
@@ -46,6 +45,7 @@ def init():
 
 def update():
     game_world.update()
+    game_world.handle_collision()
     pass
 
 

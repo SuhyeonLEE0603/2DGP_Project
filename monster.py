@@ -66,3 +66,8 @@ class Monster:
 
     def get_bb(self):
         return self.x - 100, self.y - 300, self.x + 100, self.y + 100
+
+    def handle_collision(self, group, other):
+        if group == 'hero:monster':
+            print('충돌')
+            pass
