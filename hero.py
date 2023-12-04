@@ -1,4 +1,4 @@
-from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, \
+from pico2d import  load_image, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, \
     draw_rectangle
 import math
 
@@ -9,6 +9,7 @@ import skill
 import game_world
 import game_framework
 from hp_bar import Hp_bar
+from skill_icon import SkillIcon
 
 
 def right_down(e):
@@ -136,7 +137,9 @@ class Skill:
 
     @staticmethod
     def enter(hero, e):
-        pass
+        if hero.skill_icon1.run:
+            print('스킬1 쿨타임')
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
 
     @staticmethod
     def exit(hero, e):
@@ -330,24 +333,31 @@ class Hero:
         self.jump_time = 0
         self.jump_speed = 7
         self.hp = Hp_bar(play_mode.HUMAN_HP)
+        self.skill_icon1 = SkillIcon()
         self.load_images()
         self.state_machine = StateMachine(self)
         self.state_machine.start()
 
     def fire(self):
-        fire = skill.Skill(self.x, self.y + 100, 40, self.face_dir)
-        game_world.add_object(fire)
-        game_world.add_collision_pair('fire:monster', fire, None)
+        if self.skill_icon1.run:
+            print('스킬1 쿨타임')
+        else:
+            fire = skill.Skill(self.x, self.y + 100, 40, self.face_dir)
+            game_world.add_object(fire)
+            self.skill_icon1.run_cool_time()
+            game_world.add_collision_pair('fire:monster', fire, None)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
 
     def update(self):
+        self.skill_icon1.update()
         self.state_machine.update()
 
     def draw(self):
         self.state_machine.draw()
         self.hp.draw(self.x + 100, self.y + 200)
+        self.skill_icon1.draw(self.x - 100, self.y)
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
 
     def get_bb(self):

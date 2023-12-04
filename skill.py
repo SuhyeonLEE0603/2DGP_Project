@@ -1,6 +1,7 @@
 from pico2d import *
 import game_world
 import game_framework
+from skill_icon import SkillIcon
 
 
 class Skill:
