@@ -4,6 +4,7 @@ import math
 
 from sdl2 import SDLK_a, SDLK_s, SDLK_d, SDLK_w
 
+import die_mode
 import play_mode
 import skill
 import game_world
@@ -372,6 +373,8 @@ class Hero:
 
     def handle_collision(self, group, other):
          if group == 'hero:monster':
+            if self.hp.hero_hp < 0:
+                game_framework.change_mode(die_mode)
             print('데미지 입음')
             self.hp.update(play_mode.BODY_DAMAGE)
             pass

@@ -59,6 +59,7 @@ def draw():
 
 def finish():
     game_world.clear()
+    close_canvas()
     pass
 
 

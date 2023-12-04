@@ -10,25 +10,20 @@ def init():
 
     open_canvas(1300, 450)
 
-    image = load_image('../source/title.png')
+    image = load_image('./source/title.png')
     pass
 
+def update():
+    pass
 
 def finish():
     close_canvas()
     pass
 
-
-def update():
-    pass
-
-
 def draw():
     clear_canvas()
     image.draw(640, 248)
     update_canvas()
-    pass
-
 
 def handle_events():
     events = get_events()
