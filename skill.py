@@ -24,6 +24,11 @@ class Skill:
         if self.x < 25 or self.x > 1600 - 25:
             game_world.remove_object(self)
 
-    # fill here
     def get_bb(self):
-        return self.x - 50, self.y - 30, self.x, self.y + 150
+        return self.x - 100, self.y - 100, self.x + 100, self.y + 100
+
+    def handle_collision(self, group, other):
+         if group == 'fire:monster':
+            print('스킬적중')
+            game_world.remove_object(self)
+            pass

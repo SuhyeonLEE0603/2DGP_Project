@@ -59,7 +59,7 @@ class Monster:
         else:
             self.WalkingImage[int(self.frame)].draw(self.x, self.y, self.size_x, self.size_y)
         draw_rectangle(*self.get_bb())
-        self.hp.draw(self.x, self.y + 100)
+        self.hp.draw(self.x + 150, self.y + 150)
 
     def handle_event(self, event):
         pass
@@ -69,5 +69,7 @@ class Monster:
 
     def handle_collision(self, group, other):
         if group == 'hero:monster':
-            print('충돌')
             pass
+        elif group == 'fire:monster':
+            print('몬스터 데미지 입음')
+            self.hp.update(play_mode.SKILL_DAMAGE)

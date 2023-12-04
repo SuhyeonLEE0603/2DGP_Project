@@ -10,7 +10,7 @@ def init():
 
     open_canvas(1300, 450)
 
-    image = load_image('title.png')
+    image = load_image('../source/title.png')
     pass
 
 

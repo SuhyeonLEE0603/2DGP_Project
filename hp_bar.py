@@ -18,11 +18,11 @@ class Hp_bar:
 
     def draw(self, x, y):
         if self.object == 0:
-            self.hp_bar = Hp_bar.image.clip_draw(0, 480, 500, 70, x, y)
-            self.back_hp_bar = Hp_bar.image.clip_draw(0, 190, self.hero_hp, 70, x, y)
+            self.back_hp_bar = Hp_bar.image.clip_draw(0, 190, 500, 90, x, y)
+            self.hp_bar = Hp_bar.image.clip_draw(500 - self.hero_hp, 480, 500, 70, x, y)
         elif self.object == 1:
-            self.back_hp_bar = Hp_bar.image.clip_draw(0, 520, 500, 70, x, y, 200, 60)
-            self.hp_bar = Hp_bar.image.clip_draw(0, 410, self.monster_hp, 70, x, y, 200, 60)
+            self.back_hp_bar = Hp_bar.image.clip_draw(0, 120, 700, 75, x, y)
+            self.hp_bar = Hp_bar.image.clip_draw(700 - self.monster_hp, 410, 700, 70, x, y)
 
     def update(self, hp):
         if self.object == 0:

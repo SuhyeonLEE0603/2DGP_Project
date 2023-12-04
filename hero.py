@@ -337,6 +337,7 @@ class Hero:
     def fire(self):
         fire = skill.Skill(self.x, self.y + 100, 40, self.face_dir)
         game_world.add_object(fire)
+        game_world.add_collision_pair('fire:monster', fire, None)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
@@ -346,7 +347,7 @@ class Hero:
 
     def draw(self):
         self.state_machine.draw()
-        self.hp.draw(300, 850)
+        self.hp.draw(self.x + 100, self.y + 200)
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
 
     def get_bb(self):

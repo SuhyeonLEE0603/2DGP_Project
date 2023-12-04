@@ -10,7 +10,7 @@ def init():
     open_canvas()
 
     logo_start_time = get_time()
-    image = load_image('tuk_credit.png')
+    image = load_image('../source/tuk_credit.png')
     pass
 
 
