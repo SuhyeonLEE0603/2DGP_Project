@@ -1,4 +1,4 @@
-from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time
+from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, open_canvas, close_canvas
 from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE
 
 import game_framework
@@ -8,11 +8,14 @@ import play_mode
 def init():
     global image
 
+    open_canvas(1300, 450)
+
     image = load_image('title.png')
     pass
 
 
 def finish():
+    close_canvas()
     pass
 
 
@@ -22,7 +25,7 @@ def update():
 
 def draw():
     clear_canvas()
-    image.draw(400, 300)
+    image.draw(640, 248)
     update_canvas()
     pass
 

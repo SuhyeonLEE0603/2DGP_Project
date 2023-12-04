@@ -28,6 +28,8 @@ def init():
     global grounds
     global hero_hp
 
+    open_canvas(1600, 900)
+
     back_ground = Burning_city()
     game_world.add_object(back_ground, 0)
 

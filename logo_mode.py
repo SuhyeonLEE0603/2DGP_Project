@@ -1,4 +1,4 @@
-from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time
+from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, open_canvas, close_canvas
 import game_framework
 import title_mode
 
@@ -7,12 +7,15 @@ def init():
     global image
     global logo_start_time
 
+    open_canvas()
+
     logo_start_time = get_time()
     image = load_image('tuk_credit.png')
     pass
 
 
 def finish():
+    close_canvas()
     pass
 
 
