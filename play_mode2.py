@@ -1,4 +1,6 @@
 from pico2d import *
+
+import end_mode
 import game_world
 import game_framework
 import hero
@@ -59,6 +61,10 @@ def init():
     game_world.add_collision_pair('skill2:monster', None, Monster2)
 
 def update():
+    global  Hero2
+
+    if Hero2.x > 1500 and Monster2 not in game_world.objects:
+        game_framework.change_mode(end_mode)
     game_world.update()
     game_world.handle_collision()
     pass
