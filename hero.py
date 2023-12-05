@@ -85,10 +85,17 @@ class Attack:
 
     @staticmethod
     def enter(hero, e):
+        global attack_bb
+
+        attack_bb = skill.Attack_BB(hero.x, hero.y, hero.face_dir)
+        game_world.add_object(attack_bb)
+        game_world.add_collision_pair('attack:monster', attack_bb, None)
         pass
 
     @staticmethod
     def exit(hero, e):
+        if attack_bb in game_world.objects[0]:
+            game_world.remove_object(attack_bb)
         hero.attack_frame = 0
         hero.state_machine.prev_state = Attack
         pass

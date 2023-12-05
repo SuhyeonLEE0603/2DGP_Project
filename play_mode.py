@@ -12,6 +12,7 @@ MONSTER_HP = 1
 BOSS_HP = 2
 BODY_DAMAGE = 1
 SKILL_DAMAGE = 10
+ATTACK_DAMAGE = 1
 
 def handle_events():
     events = get_events()
@@ -41,6 +42,7 @@ def init():
     game_world.add_object(monster, 1)
     game_world.add_collision_pair('hero:monster', None, monster)
     game_world.add_collision_pair('fire:monster', None, monster)
+    game_world.add_collision_pair('attack:monster', None, monster)
 
     grounds = [Ground(i * 200 + 100) for i in range(8)]
     game_world.add_objects(grounds, 0)

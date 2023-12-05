@@ -71,5 +71,13 @@ class Monster:
         if group == 'hero:monster':
             pass
         elif group == 'fire:monster':
-            print('몬스터 데미지 입음')
+            if self.hp.monster_hp < 0:
+                game_world.remove_object(self)
+                print('몬스터 삭제')
+                return
             self.hp.update(play_mode.SKILL_DAMAGE)
+            print('몬스터 데미지 입음')
+        elif group == 'attack:monster':
+            self.hp.update(play_mode.ATTACK_DAMAGE)
+            print('몬스터 데미지 입음')
+            pass
