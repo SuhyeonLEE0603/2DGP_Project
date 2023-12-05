@@ -2,6 +2,7 @@ from pico2d import *
 import game_world
 import game_framework
 import hero
+import monster2
 from back_ground import Back_Ground2, Fog, Back_Forest
 from ground import Ground2
 
@@ -27,7 +28,7 @@ def handle_events():
 def init():
 
     global Hero2
-
+    global Monster2
 
     open_canvas(1600, 900)
 
@@ -44,7 +45,10 @@ def init():
     game_world.add_object(back_ground_effect, 0)
 
     Hero2 = hero.Hero()
-    game_world.add_object(Hero2, 0)
+    game_world.add_object(Hero2, 1)
+
+    Monster2 = monster2.Monster()
+    game_world.add_object(Monster2, 1)
 
 def update():
     game_world.update()
