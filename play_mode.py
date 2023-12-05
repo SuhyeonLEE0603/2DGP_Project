@@ -8,6 +8,7 @@ from monster import Monster
 
 HUMAN_HP = 0
 MONSTER_HP = 1
+MONSTER_ATTACK = 4
 BOSS_HP = 2
 BODY_DAMAGE = 0.2
 SKILL_DAMAGE = 40

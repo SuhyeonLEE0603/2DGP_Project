@@ -1,4 +1,4 @@
-from pico2d import  load_image, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, \
+from pico2d import load_image, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, \
     draw_rectangle
 import math
 
@@ -56,6 +56,7 @@ def w_down(e):
 
 def jump_over(e):
     return e[0] == 'JUMP_OVER'
+
 
 def skill_over(e):
     return e[0] == 'SKILL_OVER'
@@ -385,9 +386,11 @@ class Hero:
         return self.x - 35, self.y - 100, self.x + 35, self.y + 100  # 값 4개 짜리 튜플 1개
 
     def handle_collision(self, group, other):
-         if group == 'hero:monster':
-            if self.hp.hero_hp < 0:
-                game_framework.change_mode(die_mode)
+        if group == 'hero:monster':
             print('데미지 입음')
             self.hp.update(play_mode.BODY_DAMAGE)
-            pass
+        if group == 'attack:hero':
+            print('데미지 입음')
+            self.hp.update(play_mode.MONSTER_ATTACK)
+        if self.hp.hero_hp < 0:
+            game_framework.change_mode(die_mode)

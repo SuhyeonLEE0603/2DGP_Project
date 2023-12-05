@@ -10,7 +10,7 @@ class Attack_BB():
         self.y = y
         self.theta = 1
         self.dir = dir
-        self.radius = 2.5  # 원운동 반지름
+        self.radius = 2.0  # 원운동 반지름
 
     def update(self):
         # 공격 BB 회전
@@ -22,7 +22,7 @@ class Attack_BB():
         else:
             self.x -= dx
             self.y -= dy
-        self.theta += 1
+        self.theta += 0.5
 
     def draw(self):
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
