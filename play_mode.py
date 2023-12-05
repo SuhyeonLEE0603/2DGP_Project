@@ -12,7 +12,7 @@ BOSS_HP = 2
 BODY_DAMAGE = 1
 SKILL_DAMAGE = 40
 SKILL2_DAMAGE = 50
-ATTACK_DAMAGE = 10
+ATTACK_DAMAGE = 100
 
 def handle_events():
     events = get_events()

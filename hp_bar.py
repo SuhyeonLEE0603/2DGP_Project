@@ -10,7 +10,7 @@ class Hp_bar:
     def __init__(self, object):
         self.hero_hp = 300
         self.font = load_font('ENCR10B.TTF', 16)
-        self.monster_hp = 700
+        self.monster_hp = 400
         self.frame = 0
         self.object = object
         self.load_iamges()
@@ -23,7 +23,7 @@ class Hp_bar:
         elif self.object == 1:
             self.font.draw(x - 450, y, f'HP : {self.monster_hp}', (255, 0, 0))
             self.back_hp_bar = Hp_bar.image.clip_draw(0, 120, 700, 75, x, y)
-            self.hp_bar = Hp_bar.image.clip_draw(700 - self.monster_hp, 410, 700, 70, x, y)
+            self.hp_bar = Hp_bar.image.clip_draw(400 - self.monster_hp, 410, 700, 70, x, y)
 
     def update(self, hp):
         if self.object == 0:
