@@ -2,7 +2,7 @@ from pico2d import load_image, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_L
     draw_rectangle
 import math
 
-from sdl2 import SDLK_a, SDLK_s, SDLK_d, SDLK_w
+from sdl2 import SDLK_a, SDLK_s, SDLK_d
 
 import die_mode
 import play_mode
@@ -49,15 +49,6 @@ def s_down(e):
 def d_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d
 
-
-def w_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_w
-
-
-def jump_over(e):
-    return e[0] == 'JUMP_OVER'
-
-
 def skill_over(e):
     return e[0] == 'SKILL_OVER'
 
@@ -91,6 +82,8 @@ class Attack:
         attack_bb = skill.Attack_BB(hero.x, hero.y, hero.face_dir)
         game_world.add_object(attack_bb)
         game_world.add_collision_pair('attack:monster', attack_bb, None)
+        game_world.add_collision_pair('monster_attack:hero_attack', attack_bb, None)
+        game_world.add_collision_pair('monster_skill:hero_attack', attack_bb, None)
         pass
 
     @staticmethod
@@ -208,42 +201,6 @@ class Stand:
         pass
 
 
-class Jump:
-
-    @staticmethod
-    def enter(hero, e):
-        pass
-
-    @staticmethod
-    def exit(hero, e):
-        hero.state_machine.prev_state = Jump
-        hero.jump_time = 0
-
-    @staticmethod
-    def do(hero):
-        if hero.y >= 180:
-            hero.y += ((hero.jump_time * hero.jump_time * game_framework.gravity)
-                       + hero.jump_speed * hero.jump_time)
-            hero.jump_time += game_framework.frame_time
-            if hero.state_machine.prev_state == RightWalk:
-                hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
-            elif hero.state_machine.prev_state == LeftWalk:
-                hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
-            hero.x = clamp(25, hero.x, 1600 - 25)
-        else:
-            hero.state_machine.handle_event(('JUMP_OVER', 0))
-            hero.y = 180
-
-    @staticmethod
-    def draw(hero):
-        if hero.face_dir == -1:
-            hero.WalkingImage[int(hero.frame)].draw(hero.x, hero.y + 75)
-        elif hero.face_dir == 1:
-            hero.WalkingImage[int(hero.frame)].composite_draw(math.radians(180), 'v', hero.x, hero.y + 75)
-
-        pass
-
-
 class LeftWalk:
 
     @staticmethod
@@ -299,12 +256,11 @@ class StateMachine:
         self.perv_state = None
         self.transitions = {
             Stand: {right_down: RightWalk, left_down: LeftWalk, left_up: RightWalk, right_up: LeftWalk, a_down: Attack,
-                    s_down: Skill, d_down: Skill2, w_down: Jump},
+                    s_down: Skill, d_down: Skill2},
             LeftWalk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: LeftWalk,
-                       a_down: Attack, s_down: Skill, w_down: Jump},
+                       a_down: Attack, s_down: Skill},
             RightWalk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: RightWalk,
-                        a_down: Attack, s_down: Skill, w_down: Jump},
-            Jump: {jump_over: Stand},
+                        a_down: Attack, s_down: Skill},
             Attack: {right_down: RightWalk, left_down: LeftWalk, attack_over: Stand},
             Skill: {right_down: RightWalk, left_down: LeftWalk, skill_over: Stand},
             Skill2: {skill_over: Stand}
@@ -392,5 +348,8 @@ class Hero:
         if group == 'attack:hero':
             print('데미지 입음')
             self.hp.update(play_mode.MONSTER_ATTACK)
+        if group == 'skill:hero':
+            print('데미지 입음')
+            self.hp.update(play_mode.MONSTER_SKILL)
         if self.hp.hero_hp < 0:
             game_framework.change_mode(die_mode)

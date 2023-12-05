@@ -10,10 +10,12 @@ from monster import Monster
 HUMAN_HP = 0
 MONSTER_HP = 1
 MONSTER_ATTACK = 4
-BODY_DAMAGE = 0.2
+BOSS_HP = 2
+BODY_DAMAGE = 0.1
 SKILL_DAMAGE = 40
 SKILL2_DAMAGE = 50
-ATTACK_DAMAGE = 100
+ATTACK_DAMAGE = 10
+MONSTER_SKILL = 30
 
 def handle_events():
     events = get_events()

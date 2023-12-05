@@ -29,13 +29,21 @@ class Attack_BB():
         pass
 
     def get_bb(self):
-        return self.x - 30, self.y + 100, self.x + 25, self.y + 150
+        return self.x - 30, self.y + 150, self.x + 25, self.y + 200
 
     def handle_collision(self, group, other):
         if group == 'attack:monster':
             print('공격적중')
             game_world.remove_object(self)
-            pass
+        if group == 'monster_attack:hero_attack':
+            print('공격 막음')
+            game_world.remove_object(self)
+        if group == 'monster_skill:hero_attack':
+            print('공격 막음')
+            game_world.remove_object(self)
+
+
+
 
 
 class Skill:
