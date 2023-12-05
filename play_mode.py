@@ -1,6 +1,7 @@
 from pico2d import *
 import game_world
 import game_framework
+import play_mode2
 from ground import Ground
 from hero import Hero
 from burning_city import Burning_city
@@ -52,6 +53,8 @@ def init():
     game_world.add_objects(grounds, 0)
 
 def update():
+    if monster not in game_world.objects and hero.x > 1500:
+        game_framework.change_mode(play_mode2)
     game_world.update()
     game_world.handle_collision()
     pass

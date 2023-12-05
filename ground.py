@@ -18,3 +18,22 @@ class Ground:
 
     def update(self):
         pass
+
+
+class Ground2:
+
+    def load_iamges(self):
+
+        Ground2.image = load_image("./source/Background/forest/TiledBackground.png")
+
+    def __init__(self, x=250, y=145):
+        self.frame = 0
+        self.x = x
+        self.y = y
+        self.load_iamges()
+
+    def draw(self):
+        Ground2.image.draw(self.x, self.y)
+
+    def update(self):
+        pass
