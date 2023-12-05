@@ -25,7 +25,6 @@ animation_names = ['Walk']
 
 class Monster:
 
-
     def load_images(self):
         self.images = load_image('./source/Humans/Knight1/0.png')
         self.WalkingImage = [load_image("./source/Demons/demon_knight/sprite/walking/" + "%d" % i + ".png") for i in
