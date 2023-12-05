@@ -5,7 +5,6 @@ from ground import Ground
 from hero import Hero
 from burning_city import Burning_city
 from monster import Monster
-from skill_icon import SkillIcon
 
 HUMAN_HP = 0
 MONSTER_HP = 1
@@ -28,7 +27,8 @@ def handle_events():
 def init():
     global hero
     global monster
-
+    global back_ground
+    global grounds
 
     open_canvas(1600, 900)
 

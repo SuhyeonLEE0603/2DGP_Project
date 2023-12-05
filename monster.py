@@ -24,15 +24,14 @@ animation_names = ['Walk']
 
 
 class Monster:
-    images = None
+
 
     def load_images(self):
-        if Monster.images == None:
-            Monster.images = load_image('./source/Humans/Knight1/0.png')
-            self.WalkingImage = [load_image("./source/Demons/demon_knight/sprite/walking/" + "%d" % i + ".png") for i in
-                                 range(3)]
-            self.AttackImage = [load_image("./source/Demons/demon_knight/sprite/Attack/" + "%d" % i + ".png") for i in
-                                range(4)]
+        self.images = load_image('./source/Humans/Knight1/0.png')
+        self.WalkingImage = [load_image("./source/Demons/demon_knight/sprite/walking/" + "%d" % i + ".png") for i in
+                             range(3)]
+        self.AttackImage = [load_image("./source/Demons/demon_knight/sprite/Attack/" + "%d" % i + ".png") for i in
+                            range(4)]
 
     def __init__(self):
         self.x, self.y = random.randint(1600 - 800, 1600), 400

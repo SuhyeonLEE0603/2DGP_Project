@@ -3,11 +3,11 @@ import game_framework
 
 
 class SkillIcon:
-    image = None
+
 
     def __init__(self):
-        if SkillIcon.image == None:
-            SkillIcon.image = load_image(f"./source/Humans/Knight1/sprite/attack1/Skill_Icon1.png")
+
+        self.image = load_image(f"./source/Humans/Knight1/sprite/attack1/Skill_Icon1.png")
         self.font = load_font('ENCR10B.TTF', 16)
         self.cool_time = 5
         self.run = False

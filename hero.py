@@ -328,19 +328,18 @@ class StateMachine:
 
 
 class Hero:
-    images = None
 
     def load_images(self):
-        if Hero.images == None:
-            Hero.images = load_image('./source/Humans/Knight1/0.png')
-            self.WalkingImage = [load_image("./source/Humans/Knight1/sprite/walking/" + "%d" % i + ".png") for i in
-                                 range(5)]
-            self.AttackImage = [load_image("./source/Humans/Knight1/sprite/attack/" + "%d" % i + ".png") for i in
-                                range(3)]
-            self.SkillImage = [load_image("./source/Humans/Knight1/sprite/attack1/" + "%d" % i + ".png") for i in
-                               range(5)]
-            self.Skill2Image = [load_image("./source/Humans/Knight1/sprite/attack2/" + "%d" % i + ".png") for i in
-                                range(7)]
+
+        self.images = load_image('./source/Humans/Knight1/0.png')
+        self.WalkingImage = [load_image("./source/Humans/Knight1/sprite/walking/" + "%d" % i + ".png") for i in
+                             range(5)]
+        self.AttackImage = [load_image("./source/Humans/Knight1/sprite/attack/" + "%d" % i + ".png") for i in
+                            range(3)]
+        self.SkillImage = [load_image("./source/Humans/Knight1/sprite/attack1/" + "%d" % i + ".png") for i in
+                           range(5)]
+        self.Skill2Image = [load_image("./source/Humans/Knight1/sprite/attack2/" + "%d" % i + ".png") for i in
+                            range(7)]
 
     def __init__(self):
         self.x, self.y = 100, 180

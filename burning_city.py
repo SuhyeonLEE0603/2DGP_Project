@@ -8,12 +8,11 @@ FRAMES_PER_ACTION = 7.0
 
 
 class Burning_city:
-    images = None
 
     def load_iamges(self):
-        if Burning_city.images == None:
-            Burning_city.images = [load_image("./source/Background/burning_city/" + "%d" % i + ".png") for i in
-                                   range(0, 7)]
+
+        Burning_city.images = [load_image("./source/Background/burning_city/" + "%d" % i + ".png") for i in
+                               range(0, 7)]
 
     def __init__(self, x=400, y=220):
         self.frame = 0

@@ -2,11 +2,10 @@ from pico2d import load_image, load_font
 
 
 class Hp_bar:
-    image = None
 
     def load_iamges(self):
-        if Hp_bar.image == None:
-            Hp_bar.image = load_image("./source/Hp_bar.png")
+
+        Hp_bar.image = load_image("./source/Hp_bar.png")
 
     def __init__(self, object):
         self.hero_hp = 300
