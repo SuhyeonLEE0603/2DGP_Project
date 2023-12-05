@@ -377,7 +377,7 @@ class Hero:
 
     def draw(self):
         self.state_machine.draw()
-        self.hp.draw(self.x + 100, self.y + 200)
+        self.hp.draw(self.x + 110, self.y + 200)
         self.skill_icon1.draw(self.x - 100, self.y)
         self.skill_icon2.draw(self.x - 50, self.y)
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달

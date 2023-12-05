@@ -79,15 +79,15 @@ class Monster:
         self.x, self.y = 800, 450
         self.load_images()
         self.frame = 0
-        self.attack_frame = 1
+        self.attack_frame = 0
         self.dir = random.choice([-1, 1])
         self.size_x, self.size_y = 1000, 1000
-        self.hp = Hp_bar(play_mode2.MONSTER_HP, 800)
+        self.hp = Hp_bar(play_mode2.MONSTER_HP, 400)
         self.state = 'Walk'
-        # self.build_behavior_tree()
+        self.build_behavior_tree()
 
     def update(self):
-        # self.bt.run()
+        self.bt.run()
         if self.state == 'Walk':
             self.frame = (self.frame + FRAMES_PER_WALK * ACTION_PER_TIME * game_framework.frame_time) % 3
             self.attack_frame = 1
@@ -96,7 +96,7 @@ class Monster:
                 self.attack = Attack_BB(self.x, self.y, self.dir)
                 game_world.add_collision_pair('attack:hero', self.attack, None)
                 game_world.add_object(self.attack)
-            self.attack_frame = (self.attack_frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 4
+            self.attack_frame = (self.attack_frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 3
 
     def draw(self):
         if self.state == 'Walk':
@@ -122,11 +122,11 @@ class Monster:
         if group == 'hero:monster':
             return
         if group == 'fire:monster':
-            self.hp.update(play_mode.SKILL_DAMAGE)
+            self.hp.update(play_mode2.SKILL_DAMAGE)
         if group == 'attack:monster':
-            self.hp.update(play_mode.ATTACK_DAMAGE)
+            self.hp.update(play_mode2.ATTACK_DAMAGE)
         if group == 'skill2:monster':
-            self.hp.update(play_mode.SKILL2_DAMAGE)
+            self.hp.update(play_mode2.SKILL2_DAMAGE)
         if self.hp.monster_hp <= 0:
             game_world.remove_object(self)
             print('몬스터 삭제')
@@ -153,15 +153,15 @@ class Monster:
         self.x += RUN_SPEED_PPS * self.dir * game_framework.frame_time
 
     def is_hero_nearby(self, r):
-        if self.distance_less_than(play_mode.hero.x, play_mode.hero.y, self.x, self.y, r):
+        if self.distance_less_than(play_mode2.Hero2.x, play_mode2.Hero2.y, self.x, self.y, r):
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.FAIL
 
     def move_to_hero(self, r=0.5):
         self.state = 'Walk'
-        self.move_slightly_to(play_mode.hero.x)
-        if self.distance_less_than(play_mode.hero.x, play_mode.hero.y, self.x, self.y, r):
+        self.move_slightly_to(play_mode2.Hero2.x)
+        if self.distance_less_than(play_mode2.Hero2.x, play_mode2.Hero2.y, self.x, self.y, r):
 
             return BehaviorTree.SUCCESS
         else:

@@ -13,7 +13,7 @@ BOSS_HP = 2
 BODY_DAMAGE = 0.2
 SKILL_DAMAGE = 40
 SKILL2_DAMAGE = 50
-ATTACK_DAMAGE = 100
+ATTACK_DAMAGE = 10
 
 def handle_events():
     events = get_events()
@@ -46,9 +46,16 @@ def init():
 
     Hero2 = hero.Hero()
     game_world.add_object(Hero2, 1)
+    game_world.add_collision_pair('hero:monster', Hero2, None)
+    game_world.add_collision_pair('attack:hero', None, Hero2)
+    game_world.add_collision_pair('skill:hero', None, Hero2)
 
     Monster2 = monster2.Monster()
     game_world.add_object(Monster2, 1)
+    game_world.add_collision_pair('hero:monster', None, Monster2)
+    game_world.add_collision_pair('fire:monster', None, Monster2)
+    game_world.add_collision_pair('attack:monster', None, Monster2)
+    game_world.add_collision_pair('skill2:monster', None, Monster2)
 
 def update():
     game_world.update()
