@@ -38,6 +38,7 @@ def init():
     hero = Hero()
     game_world.add_object(hero, 2)
     game_world.add_collision_pair('hero:monster', hero, None)
+    game_world.add_collision_pair('attack:hero', None, hero)
 
     monster = Monster()
     game_world.add_object(monster, 1)

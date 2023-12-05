@@ -66,8 +66,8 @@ def attack_over(e):
 
 
 # Hero Run Speed
-PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 30.0  # Km / Hour
+PIXEL_PER_METER = (10.0 / 0.15)  # 10 pixel 15 cm
+RUN_SPEED_KMPH = 20.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -259,7 +259,7 @@ class LeftWalk:
     def do(hero):
         hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         hero.x = clamp(25, hero.x, 1600 - 25)
-        hero.frame = (hero.frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 5
+        hero.frame = (hero.frame + FRAMES_PER_WALK * ACTION_PER_TIME * game_framework.frame_time) % 5
 
     @staticmethod
     def draw(hero):
@@ -283,7 +283,7 @@ class RightWalk:
     def do(hero):
         hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         hero.x = clamp(25, hero.x, 1600 - 25)
-        hero.frame = (hero.frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 5
+        hero.frame = (hero.frame + FRAMES_PER_WALK * ACTION_PER_TIME * game_framework.frame_time) % 5
 
     @staticmethod
     def draw(hero):
