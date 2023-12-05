@@ -5,6 +5,7 @@ from pico2d import *
 
 import game_world
 import play_mode
+import play_mode2
 from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 from hp_bar import Hp_bar
 
@@ -80,9 +81,8 @@ class Monster:
         self.frame = 0
         self.attack_frame = 1
         self.dir = random.choice([-1, 1])
-        self.size_x, self.size_y = 1400, 1000
-        self.collision_cnt = 0
-        self.hp = Hp_bar(play_mode.MONSTER_HP)
+        self.size_x, self.size_y = 1000, 1000
+        self.hp = Hp_bar(play_mode2.MONSTER_HP, 800)
         self.state = 'Walk'
         # self.build_behavior_tree()
 
@@ -103,15 +103,14 @@ class Monster:
             if self.dir < 0:
                 self.images[self.state][int(self.frame)].draw(self.x, self.y, self.size_x, self.size_y)
             else:
-                self.images[self.state][int(self.frame)].composite_draw(0, 'h', self.x, self.y, self.size_x,
-                                                                        self.size_y)
+                self.images[self.state][int(self.frame)].composite_draw(0, 'h', self.x, self.y, self.size_x, self.size_y)
         else:
             if self.dir < 0:
                 self.images[self.state][int(self.attack_frame)].draw(self.x, self.y, self.size_x, self.size_y)
             else:
                 self.images[self.state][int(self.attack_frame)].composite_draw(0, 'h', self.x, self.y, self.size_x, self.size_y)
         draw_rectangle(*self.get_bb())
-        self.hp.draw(self.x + 150, self.y + 150)
+        self.hp.draw(self.x + 150, self.y + 50)
 
     def handle_event(self, event):
         pass
@@ -187,3 +186,30 @@ class Monster:
         root = SEL_chase_or_wander = Selector('추적 또는 배회', SEQ_chase_hero, SEQ_move_left_right)
 
         self.bt = BehaviorTree(root)
+
+
+class StateMachine:
+    def __init__(self, monster):
+        self.monster = monster
+        self.cur_state = Walk
+        self.perv_state = None
+        self.transitions = {
+
+        }
+
+    def start(self):
+        self.cur_state.enter(self.monster, 'NONE')
+
+    def update(self):
+        self.cur_state.do(self.monster)
+
+    def handle_event(self, e):
+        for check_event, next_state in self.transitions[self.cur_state].items():
+            if check_event(e):
+                self.cur_state.exit(self.monster)
+                self.cur_state = next_state
+                self.cur_state.enter(self.monster)
+                return True
+
+    def draw(self):
+        self.cur_state.draw(self.monster)
