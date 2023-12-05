@@ -3,7 +3,7 @@ import game_world
 import game_framework
 import play_mode2
 from ground import Ground
-from hero import Hero
+import hero
 from burning_city import Burning_city
 from monster import Monster
 
@@ -37,7 +37,7 @@ def init():
     back_ground = Burning_city()
     game_world.add_object(back_ground, 0)
 
-    hero = Hero()
+    hero = hero.Hero()
     game_world.add_object(hero, 2)
     game_world.add_collision_pair('hero:monster', hero, None)
     game_world.add_collision_pair('attack:hero', None, hero)

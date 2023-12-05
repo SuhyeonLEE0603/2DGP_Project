@@ -1,6 +1,7 @@
 from pico2d import *
 import game_world
 import game_framework
+import hero
 from back_ground import Back_Ground2, Fog, Back_Forest
 from ground import Ground2
 
@@ -20,10 +21,12 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-
+        else:
+            Hero2.handle_event(event)
 
 def init():
 
+    global Hero2
 
 
     open_canvas(1600, 900)
@@ -40,6 +43,8 @@ def init():
     back_ground_effect = Fog()
     game_world.add_object(back_ground_effect, 0)
 
+    Hero2 = hero.Hero()
+    game_world.add_object(Hero2, 0)
 
 def update():
     game_world.update()
