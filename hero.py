@@ -118,12 +118,19 @@ class Skill2:
 
     @staticmethod
     def enter(hero, e):
+        global skill2_bb
+
+        skill2_bb = skill.Skill2_BB(hero.x, hero.y, hero.face_dir)
+        game_world.add_object(skill2_bb)
+        game_world.add_collision_pair('skill2:monster', skill2_bb, None)
         if hero.skill_icon2.run:
             print('스킬2 쿨타임')
             hero.state_machine.handle_event(('SKILL_OVER', 0))
 
     @staticmethod
     def exit(hero, e):
+        if skill2_bb in game_world.objects[0]:
+            game_world.remove_object(skill2_bb)
         hero.skill_frame = 0
         hero.state_machine.prev_state = Skill
         hero.skill_icon2.run_cool_time()

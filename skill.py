@@ -66,3 +66,27 @@ class Skill:
             print('스킬적중')
             game_world.remove_object(self)
             pass
+
+class Skill2_BB:
+
+    def __init__(self, x, y, dir):
+        self.x, self.y = x, y
+        self.dir = dir
+
+    def draw(self):
+        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
+
+    def update(self):
+        pass
+
+    def get_bb(self):
+        if self.dir == 1:
+            return self.x + 50, self.y - 100, self.x + 200, self.y - 50
+        elif self.dir == -1:
+            return self.x - 50, self.y - 100, self.x - 200, self.y - 50
+
+    def handle_collision(self, group, other):
+        if group == 'skill2:monster':
+            print('스킬2적중')
+            game_world.remove_object(self)
+            pass

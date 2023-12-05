@@ -70,14 +70,16 @@ class Monster:
     def handle_collision(self, group, other):
         if group == 'hero:monster':
             pass
-        elif group == 'fire:monster':
+        if group == 'fire:monster':
             if self.hp.monster_hp < 0:
                 game_world.remove_object(self)
                 print('몬스터 삭제')
                 return
             self.hp.update(play_mode.SKILL_DAMAGE)
             print('몬스터 데미지 입음')
-        elif group == 'attack:monster':
+        if group == 'attack:monster':
             self.hp.update(play_mode.ATTACK_DAMAGE)
             print('몬스터 데미지 입음')
+        if group == 'skill2:monster':
+            self.hp.update(play_mode.SKILL2_DAMAGE)
             pass
