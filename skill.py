@@ -2,6 +2,7 @@ from pico2d import *
 import game_world
 import game_framework
 import math
+
 class Attack_BB():
 
     def __init__(self, x, y, dir):
@@ -38,11 +39,11 @@ class Attack_BB():
 
 
 class Skill:
-    image = None
+
 
     def __init__(self, x=400, y=300, velocity=1, dir=1):
-        if Skill.image == None:
-            Skill.image = load_image(f"./source/Humans/Knight1/sprite/attack1/Skill1.png")
+
+        self.image = load_image(f"./source/Humans/Knight1/sprite/attack1/Skill1.png")
         self.x, self.y, self.velocity = x, y, velocity
         self.dir = dir
 
