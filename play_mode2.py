@@ -34,7 +34,9 @@ def init():
     global Monster2
 
     open_canvas(1600, 900)
-
+    # sound = load_wav('./source/play_mode2.wav')
+    # sound.set_volume(20)
+    # sound.play()
     back_ground = Back_Forest()
     game_world.add_object(back_ground, 0)
 
@@ -63,7 +65,7 @@ def init():
 def update():
     global  Hero2
 
-    if Hero2.x > 1500 and Monster2 not in game_world.objects:
+    if (Hero2.x > 1500) and (Monster2 not in game_world.objects[1]):
         game_framework.change_mode(end_mode)
     game_world.update()
     game_world.handle_collision()

@@ -37,7 +37,9 @@ class Attack_BB:
     def __init__(self):
         if Attack_BB.image == None:
             self.image = load_image("./source/Demons/demon_monk/sprite/attack/attack.gif")
-
+        self.sound = load_wav('./source/monster2_attack.wav')
+        self.sound.set_volume(20)
+        self.sound.play()
         self.x, self.y,  = play_mode2.Hero2.x, play_mode2.Hero2.y + 350
 
     def update(self):
@@ -66,7 +68,9 @@ class Skill_BB:
     def __init__(self, x, y, dir):
         if Skill_BB.image == None:
             self.image = load_image("./source/Demons/demon_monk/sprite/skill/skill.gif")
-
+        self.sound = load_wav('./source/monster2_skill.wav')
+        self.sound.set_volume(20)
+        self.sound.play()
         self.x, self.y, self.dir = x, y - 100, dir
 
     def update(self):
@@ -137,7 +141,7 @@ class Monster:
             if self.attack_frame < 2.5 and self.attack_frame > 2.485:
                 self.attack = Attack_BB()
                 game_world.add_collision_pair('attack:hero', self.attack, None)
-                game_world.add_collision_pair('monster_attack:hero_attack', None, self.attack)
+                game_world.add_collision_pair('monster2_attack:hero_attack', None, self.attack)
                 game_world.add_object(self.attack)
             self.attack_frame = (self.attack_frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 3
         else:
@@ -229,7 +233,10 @@ class Monster:
             self.state = 'Attack'
         else:
             self.state = 'Skill'
-
+        if play_mode2.Hero2.x < self.x:
+            self.dir = -1
+        else:
+            self.dir = 1
         return BehaviorTree.RUNNING
 
     def build_behavior_tree(self):

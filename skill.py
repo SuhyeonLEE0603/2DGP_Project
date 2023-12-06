@@ -3,6 +3,7 @@ import game_world
 import game_framework
 import math
 
+
 class Attack_BB():
 
     def __init__(self, x, y, dir):
@@ -10,7 +11,10 @@ class Attack_BB():
         self.y = y
         self.theta = 1
         self.dir = dir
-        self.radius = 2.0  # 원운동 반지름
+        self.radius = 2  # 원운동 반지름
+        self.attack_sound = load_wav('./source/sword_sound.wav')
+        self.attack_sound.set_volume(20)
+        self.attack_sound.play()
 
     def update(self):
         # 공격 BB 회전
@@ -22,14 +26,14 @@ class Attack_BB():
         else:
             self.x -= dx
             self.y -= dy
-        self.theta += 0.5
+        self.theta += 0.7
 
     def draw(self):
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
         pass
 
     def get_bb(self):
-        return self.x - 30, self.y + 150, self.x + 25, self.y + 200
+        return self.x - 25, self.y + 100, self.x + 25, self.y + 250
 
     def handle_collision(self, group, other):
         if group == 'attack:monster':
@@ -41,19 +45,21 @@ class Attack_BB():
         if group == 'monster_skill:hero_attack':
             print('공격 막음')
             game_world.remove_object(self)
-
-
-
+        if group == 'monster1_attack:hero_attack':
+            print('공격 막음')
+            game_world.remove_object(self)
 
 
 class Skill:
-
 
     def __init__(self, x=400, y=300, velocity=1, dir=1):
 
         self.image = load_image(f"./source/Humans/Knight1/sprite/attack1/Skill1.png")
         self.x, self.y, self.velocity = x, y, velocity
         self.dir = dir
+        self.sound = load_wav('./source/skill.wav')
+        self.sound.set_volume(20)
+        self.sound.play()
 
     def draw(self):
         self.image.draw(self.x, self.y)
@@ -76,11 +82,15 @@ class Skill:
             game_world.remove_object(self)
             pass
 
+
 class Skill2_BB:
 
     def __init__(self, x, y, dir):
         self.x, self.y = x, y
         self.dir = dir
+        self.sound = load_wav('./source/skill2.wav')
+        self.sound.set_volume(20)
+        self.sound.play()
 
     def draw(self):
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달

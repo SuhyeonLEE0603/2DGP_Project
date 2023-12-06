@@ -82,7 +82,8 @@ class Attack:
         attack_bb = skill.Attack_BB(hero.x, hero.y, hero.face_dir)
         game_world.add_object(attack_bb)
         game_world.add_collision_pair('attack:monster', attack_bb, None)
-        game_world.add_collision_pair('monster_attack:hero_attack', attack_bb, None)
+        game_world.add_collision_pair('monster2_attack:hero_attack', attack_bb, None)
+        game_world.add_collision_pair('monster1_attack:hero_attack', attack_bb, None)
         game_world.add_collision_pair('monster_skill:hero_attack', attack_bb, None)
         pass
 
@@ -114,12 +115,14 @@ class Skill2:
     def enter(hero, e):
         global skill2_bb
 
-        skill2_bb = skill.Skill2_BB(hero.x, hero.y, hero.face_dir)
-        game_world.add_object(skill2_bb)
-        game_world.add_collision_pair('skill2:monster', skill2_bb, None)
         if hero.skill_icon2.run:
             print('스킬2 쿨타임')
             hero.state_machine.handle_event(('SKILL_OVER', 0))
+        else:
+            skill2_bb = skill.Skill2_BB(hero.x, hero.y, hero.face_dir)
+            game_world.add_object(skill2_bb)
+            game_world.add_collision_pair('skill2:monster', skill2_bb, None)
+
 
     @staticmethod
     def exit(hero, e):
@@ -351,5 +354,5 @@ class Hero:
         if group == 'skill:hero':
             print('데미지 입음')
             self.hp.update(play_mode.MONSTER_SKILL)
-        if self.hp.hero_hp < 0:
+        if self.hp.hero_hp <= 0:
             game_framework.change_mode(die_mode)

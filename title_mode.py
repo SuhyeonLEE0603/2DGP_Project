@@ -1,4 +1,5 @@
-from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, open_canvas, close_canvas
+from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, open_canvas, close_canvas, load_wav, \
+    load_music
 from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE
 
 import game_framework
@@ -11,7 +12,9 @@ def init():
     open_canvas(1300, 450)
 
     image = load_image('./source/title.png')
-    pass
+    sound = load_wav('./source/title_mode.wav')
+    sound.set_volume(20)
+    sound.repeat_play()
 
 def update():
     pass

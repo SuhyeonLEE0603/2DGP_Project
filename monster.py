@@ -26,20 +26,23 @@ animation_names = ['Walk', 'Attack']
 
 class Attack_BB:
     def __init__(self, x, y, dir):
-        self.x, self.y, self.dir = x, y, dir
+        self.x, self.y, self.dir = x, y + 50, dir
         self.theta = 1
-        self.radius = 1.5
+        self.radius = 3
+        self.sound = load_wav('./source/monster1_attack.wav')
+        self.sound.set_volume(20)
+        self.sound.play()
 
     def update(self):
         dx = math.cos(math.radians(self.theta)) * self.radius
         dy = math.sin(math.radians(self.theta)) * self.radius
         if self.dir == 1:
-            self.x += dx
+            self.x += dx * 2
             self.y -= dy
         else:
-            self.x -= dx
+            self.x -= dx * 2
             self.y -= dy
-        self.theta += 0.6
+        self.theta += 0.8
         if self.y < 190:
             game_world.remove_object(self)
 
@@ -48,15 +51,17 @@ class Attack_BB:
         pass
 
     def get_bb(self):
-        if self.dir == -1:
-            return self.x - 300, self.y + 80, self.x - 20, self.y - 10
-        else:
-            return self.x + 300, self.y + 80, self.x + 20, self.y - 10
+
+        return self.x - 100, self.y - 10, self.x + 100, self.y + 80
+
 
     def handle_collision(self, group, other):
         if group == 'attack:hero':
             game_world.remove_object(self)
             print('몬스터 공격적중')
+        if group == 'monster1_attack:hero_attack':
+            game_world.remove_object(self)
+            print('몬스터 공격 막음')
 
 
 class Monster:
@@ -93,10 +98,10 @@ class Monster:
         else:
             if self.attack_frame < 2.5 and self.attack_frame > 2.47:
                 self.attack = Attack_BB(self.x, self.y, self.dir)
-                game_world.add_collision_pair('attack:hero', self.attack, None)
                 game_world.add_object(self.attack)
-            self.attack_frame = (
-                                        self.attack_frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 4
+                game_world.add_collision_pair('attack:hero', self.attack, None)
+                game_world.add_collision_pair('monster1_attack:hero_attack', None, self.attack)
+            self.attack_frame = (self.attack_frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 4
 
     def draw(self):
         if self.state == 'Walk':
@@ -155,22 +160,25 @@ class Monster:
         self.x += RUN_SPEED_PPS * self.dir * game_framework.frame_time
 
     def is_hero_nearby(self, r):
-        if self.distance_less_than(play_mode.hero.x, play_mode.hero.y, self.x, self.y, r):
+        if self.distance_less_than(play_mode.Hero1.x, play_mode.Hero1.y, self.x, self.y, r):
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.FAIL
 
     def move_to_hero(self, r=0.5):
         self.state = 'Walk'
-        self.move_slightly_to(play_mode.hero.x)
-        if self.distance_less_than(play_mode.hero.x, play_mode.hero.y, self.x, self.y, r):
-
+        self.move_slightly_to(play_mode.Hero1.x)
+        if self.distance_less_than(play_mode.Hero1.x, play_mode.Hero1.y, self.x, self.y, r):
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.RUNNING
 
     def attack_hero(self):
         self.state = 'Attack'
+        if play_mode.Hero1.x < self.x:
+            self.dir = -1
+        else:
+            self.dir = 1
 
         return BehaviorTree.RUNNING
 
@@ -179,7 +187,7 @@ class Monster:
 
         SEQ_move_left_right = Sequence('좌우 이동', a3)
 
-        c1 = Condition('주인공이 근처에 있는가?', self.is_hero_nearby, 15)
+        c1 = Condition('주인공이 근처에 있는가?', self.is_hero_nearby, 25)
         a4 = Action('주인공으로 이동', self.move_to_hero, 15)
         a5 = Action('가까워 지면 주인공 공격', self.attack_hero)
 

@@ -9,13 +9,13 @@ from monster import Monster
 
 HUMAN_HP = 0
 MONSTER_HP = 1
-MONSTER_ATTACK = 4
+MONSTER_ATTACK = 10
 BOSS_HP = 2
 BODY_DAMAGE = 0.1
-SKILL_DAMAGE = 40
-SKILL2_DAMAGE = 50
+SKILL_DAMAGE = 60
+SKILL2_DAMAGE = 70
 ATTACK_DAMAGE = 10
-MONSTER_SKILL = 30
+MONSTER_SKILL = 70
 
 def handle_events():
     events = get_events()
@@ -25,23 +25,27 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         else:
-            hero.handle_event(event)
+            Hero1.handle_event(event)
 
 def init():
-    global hero
+    global Hero1
     global monster
     global back_ground
     global grounds
 
     open_canvas(1600, 900)
 
+    # sound = load_wav('./source/play_mode1.wav')
+    # sound.set_volume(20)
+    # sound.play()
+
     back_ground = Burning_city()
     game_world.add_object(back_ground, 0)
 
-    hero = hero.Hero()
-    game_world.add_object(hero, 2)
-    game_world.add_collision_pair('hero:monster', hero, None)
-    game_world.add_collision_pair('attack:hero', None, hero)
+    Hero1 = hero.Hero()
+    game_world.add_object(Hero1, 2)
+    game_world.add_collision_pair('hero:monster', Hero1, None)
+    game_world.add_collision_pair('attack:hero', None, Hero1)
 
     monster = Monster()
     game_world.add_object(monster, 1)
@@ -54,7 +58,7 @@ def init():
     game_world.add_objects(grounds, 0)
 
 def update():
-    if monster not in game_world.objects and hero.x > 1500:
+    if (monster not in game_world.objects[1]) and (Hero1.x > 1500):
         game_framework.change_mode(play_mode2)
     game_world.update()
     game_world.handle_collision()

@@ -1,4 +1,4 @@
-from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, open_canvas, close_canvas
+from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, open_canvas, close_canvas, load_wav
 from sdl2 import SDL_KEYDOWN, SDLK_r, SDLK_ESCAPE, SDL_QUIT
 
 import game_framework
@@ -16,11 +16,15 @@ def handle_events():
 
 def init():
     global image
-    global logo_start_time
+    global end_start_time
 
     open_canvas(1200, 740)
 
-    logo_start_time = get_time()
+    sound = load_wav('./source/game_over.wav')
+    sound.set_volume(20)
+    sound.play()
+
+    end_start_time = get_time()
     image = load_image('./source/you_die.png')
     pass
 
@@ -31,10 +35,10 @@ def finish():
 
 
 def update():
-    global logo_start_time
+    global end_start_time
 
-    if get_time() - logo_start_time >= 6.0:
-        logo_start_time = get_time()
+    if get_time() - end_start_time >= 6.0:
+        end_start_time = get_time()
         game_framework.quit()
     pass
 
