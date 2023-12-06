@@ -471,11 +471,11 @@ class StateMachine:
             LeftAttack: {left_up: Stand, attack_over: LeftWalk, right_down: RightWalk, s_down: LeftSkill, d_down: LeftSkill2},
             RightAttack: {right_up: Stand, attack_over: RightWalk, left_down: LeftWalk, s_down: RightSkill, d_down: RightSkill2},
             Skill: {right_down: RightWalk, left_down: LeftWalk, right_up: LeftWalk, left_up: RightWalk, skill_over: Stand},
-            LeftSkill: {left_up: Stand, skill_over: LeftWalk, right_down: RightWalk, a_down: LeftAttack, d_down: LeftSkill2},
-            RightSkill: {right_up: Stand, skill_over: RightWalk, left_down: LeftWalk, a_down: RightAttack, d_down: RightSkill2},
+            LeftSkill: {skill_over: Stand, right_down: RightWalk, a_down: LeftAttack, d_down: LeftSkill2},
+            RightSkill: {skill_over: Stand, left_down: LeftWalk, a_down: RightAttack, d_down: RightSkill2},
             Skill2: {right_down: RightWalk, left_down: LeftWalk,right_up: LeftWalk, left_up: RightWalk, skill_over: Stand},
-            RightSkill2: {right_up: Stand, skill_over: RightWalk, left_down: LeftWalk, a_down: RightAttack, s_down: RightSkill},
-            LeftSkill2: {left_up: Stand, skill_over: LeftWalk, right_down: RightWalk, a_down: LeftAttack, s_down: LeftSkill}
+            RightSkill2: {skill_over: Stand, left_down: LeftWalk, a_down: RightAttack, s_down: RightSkill},
+            LeftSkill2: {skill_over: Stand, right_down: RightWalk, a_down: LeftAttack, s_down: LeftSkill}
         }
 
     def start(self):
