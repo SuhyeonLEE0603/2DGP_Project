@@ -38,7 +38,7 @@ class Attack_BB:
         if Attack_BB.image == None:
             self.image = load_image("./source/Demons/demon_monk/sprite/attack/attack.gif")
         self.sound = load_wav('./source/monster2_attack.wav')
-        self.sound.set_volume(20)
+        self.sound.set_volume(40)
         self.sound.play()
         self.x, self.y,  = play_mode2.Hero2.x, play_mode2.Hero2.y + 350
 
@@ -68,7 +68,7 @@ class Skill_BB:
         if Skill_BB.image == None:
             self.image = load_image("./source/Demons/demon_monk/sprite/skill/skill.gif")
         self.sound = load_wav('./source/monster2_skill.wav')
-        self.sound.set_volume(20)
+        self.sound.set_volume(40)
         self.sound.play()
         self.x, self.y, self.dir = x, y - 100, dir
 

@@ -32,12 +32,12 @@ def init():
     global monster
     global back_ground
     global grounds
+    global play_mode1_sound
 
     open_canvas(1600, 900)
 
-    # sound = load_wav('./source/play_mode1.wav')
-    # sound.set_volume(20)
-    # sound.play()
+    play_mode1_sound = load_wav('./source/play_mode1.wav')
+    play_mode1_sound.repeat_play()
 
     back_ground = Burning_city()
     game_world.add_object(back_ground, 0)

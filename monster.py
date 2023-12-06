@@ -30,7 +30,6 @@ class Attack_BB:
         self.theta = 1
         self.radius = 3
         self.sound = load_wav('./source/monster1_attack.wav')
-        self.sound.set_volume(20)
         self.sound.play()
 
     def update(self):

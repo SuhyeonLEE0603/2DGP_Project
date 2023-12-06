@@ -13,7 +13,6 @@ class Attack_BB():
         self.dir = dir
         self.radius = 2  # 원운동 반지름
         self.attack_sound = load_wav('./source/sword_sound.wav')
-        self.attack_sound.set_volume(20)
         self.attack_sound.play()
 
     def update(self):
@@ -57,7 +56,6 @@ class Skill:
         self.x, self.y, self.velocity = x, y, velocity
         self.dir = dir
         self.sound = load_wav('./source/skill.wav')
-        self.sound.set_volume(20)
         self.sound.play()
 
     def draw(self):
@@ -87,7 +85,6 @@ class Skill2_BB:
         self.x, self.y = x, y
         self.dir = dir
         self.sound = load_wav('./source/skill2.wav')
-        self.sound.set_volume(20)
         self.sound.play()
 
     def draw(self):

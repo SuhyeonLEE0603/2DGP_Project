@@ -8,13 +8,14 @@ import play_mode
 
 def init():
     global image
+    global title_sound
 
     open_canvas(1300, 450)
 
     image = load_image('./source/title.png')
-    sound = load_wav('./source/title_mode.wav')
-    sound.set_volume(20)
-    sound.repeat_play()
+    title_sound = load_wav('./source/title_mode.wav')
+    # title_sound.set_volume(20)
+    title_sound.repeat_play()
 
 def update():
     pass

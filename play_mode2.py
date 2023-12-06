@@ -32,11 +32,12 @@ def init():
 
     global Hero2
     global Monster2
+    global play_mode2_sound
 
     open_canvas(1600, 900)
-    # sound = load_wav('./source/play_mode2.wav')
-    # sound.set_volume(20)
-    # sound.play()
+    play_mode2_sound = load_wav('./source/play_mode2.wav')
+    play_mode2_sound.repeat_play()
+
     back_ground = Back_Forest()
     game_world.add_object(back_ground, 0)
 

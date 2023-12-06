@@ -1,4 +1,4 @@
-from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, open_canvas, close_canvas
+from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, open_canvas, close_canvas, load_wav
 from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE
 
 import game_framework
@@ -6,15 +6,20 @@ import game_framework
 def init():
     global image
     global ending_start_time
+    global end_sound
 
     open_canvas(790, 600)
 
+    end_sound = load_wav('./source/end_mode.wav')
+    # end_sound.set_volume(20)
+    end_sound.play()
     ending_start_time = get_time()
     image = load_image('./source/ending.png')
     pass
 
 
 def finish():
+
     close_canvas()
     pass
 
