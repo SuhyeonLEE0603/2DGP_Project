@@ -48,7 +48,6 @@ class Attack_BB:
 
     def draw(self):
         self.image.draw(self.x, self.y)
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
         pass
 
     def get_bb(self):
@@ -81,7 +80,6 @@ class Skill_BB:
 
     def draw(self):
         self.image.draw(self.x, self.y)
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
         pass
 
     def get_bb(self):
@@ -244,8 +242,8 @@ class Monster:
 
         SEQ_move_left_right = Sequence('좌우 이동', a3)
 
-        c1 = Condition('주인공이 근처에 있는가?', self.is_hero_nearby, 17)
-        a4 = Action('주인공으로 이동', self.move_to_hero, 17)
+        c1 = Condition('주인공이 근처에 있는가?', self.is_hero_nearby, 25)
+        a4 = Action('주인공으로 이동', self.move_to_hero, 20)
         a5 = Action('가까워 지면 주인공 공격', self.attack_hero)
 
         SEQ_chase_hero = Sequence('주인공을 추적 후 공격', c1, a4, a5)

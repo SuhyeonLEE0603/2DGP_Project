@@ -29,7 +29,6 @@ class Attack_BB():
         self.theta += 0.7
 
     def draw(self):
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
         pass
 
     def get_bb(self):
@@ -63,7 +62,6 @@ class Skill:
 
     def draw(self):
         self.image.draw(self.x, self.y)
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
 
     def update(self):
         if self.dir == 1:
@@ -93,8 +91,7 @@ class Skill2_BB:
         self.sound.play()
 
     def draw(self):
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
-
+        pass
     def update(self):
         pass
 

@@ -15,7 +15,7 @@ BODY_DAMAGE = 0.1
 SKILL_DAMAGE = 60
 SKILL2_DAMAGE = 70
 ATTACK_DAMAGE = 10
-MONSTER_SKILL = 70
+MONSTER_SKILL = 50
 
 def handle_events():
     events = get_events()

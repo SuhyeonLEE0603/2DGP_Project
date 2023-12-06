@@ -47,7 +47,6 @@ class Attack_BB:
             game_world.remove_object(self)
 
     def draw(self):
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 각각 인자로 전달
         pass
 
     def get_bb(self):
