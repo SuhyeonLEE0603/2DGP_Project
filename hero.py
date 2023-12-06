@@ -464,38 +464,20 @@ class StateMachine:
         self.perv_state = None
         self.transitations = {
             Stand: {right_down: RightWalk, left_down: LeftWalk, left_up: RightWalk, right_up: LeftWalk, a_down: Attack,
-                    s_down: Skill, d_down: Skill2, s_up: Stand},
-            LeftWalk: {right_down: Stand, left_up: Stand, a_down: LeftAttack,
-                       s_down: LeftSkill, s_up: LeftWalk, d_down: LeftSkill2, a_up: LeftWalk},
-            RightWalk: {left_down: Stand, right_up: Stand, a_down: RightAttack,
-                        s_down: RightSkill, d_down: RightSkill2},
+                    s_down: Skill, d_down: Skill2},
+            LeftWalk: {right_down: Stand, left_up: Stand, a_down: LeftAttack, s_down: LeftSkill, d_down: LeftSkill2},
+            RightWalk: {left_down: Stand, right_up: Stand, a_down: RightAttack, s_down: RightSkill, d_down: RightSkill2},
             Attack: {right_down: RightWalk, left_down: LeftWalk, attack_over: Stand, a_up: Stand},
-            LeftAttack: {left_up: RightWalk, a_up: LeftWalk, right_down: RightWalk, s_down: LeftSkill, d_down: LeftSkill2},
-            RightAttack: {right_up: LeftWalk, a_up: RightWalk, left_down: LeftWalk, s_down: RightSkill, d_down: RightSkill2},
+            LeftAttack: {left_up: RightWalk, attack_over: LeftWalk, right_down: RightWalk, s_down: LeftSkill, d_down: LeftSkill2},
+            RightAttack: {right_up: LeftWalk, attack_over: RightWalk, left_down: LeftWalk, s_down: RightSkill, d_down: RightSkill2},
             Skill: {right_down: RightWalk, left_down: LeftWalk, right_up: LeftWalk, left_up: RightWalk, skill_over: Stand},
-            LeftSkill: {left_up: RightWalk, s_up: LeftWalk, right_down: RightWalk, a_down: LeftAttack, d_down: LeftSkill2},
-            RightSkill: {right_up: LeftWalk, s_up: RightWalk, left_down: LeftWalk, a_down: RightAttack, d_down: RightSkill2},
-            Skill2: {right_down: RightWalk, left_down: LeftWalk,right_up: LeftWalk, left_up: RightWalk,skill_over: Stand},
-            RightSkill2: {right_up: LeftWalk, d_up: RightWalk, left_down: LeftWalk, a_down: RightAttack, s_down: RightSkill},
-            LeftSkill2: {left_up: RightWalk, d_up: LeftWalk, right_down: RightWalk, a_down: LeftAttack, s_down: LeftSkill}
+            LeftSkill: {left_up: RightWalk, skill_over: LeftWalk, right_down: RightWalk, a_down: LeftAttack, d_down: LeftSkill2},
+            RightSkill: {right_up: LeftWalk, skill_over: RightWalk, left_down: LeftWalk, a_down: RightAttack, d_down: RightSkill2},
+            Skill2: {right_down: RightWalk, left_down: LeftWalk,right_up: LeftWalk, left_up: RightWalk, skill_over: Stand},
+            RightSkill2: {right_up: LeftWalk, skill_over: RightWalk, left_down: LeftWalk, a_down: RightAttack, s_down: RightSkill},
+            LeftSkill2: {left_up: RightWalk, skill_over: LeftWalk, right_down: RightWalk, a_down: LeftAttack, s_down: LeftSkill}
         }
 
-    # {
-    #     Idle: {right_down: RunRight, left_down: RunLeft, left_up: RunRight, right_up: RunLeft, upkey_down: RunUp,
-    #            downkey_down: RunDown, upkey_up: RunDown, downkey_up: RunUp},
-    #     RunRight: {right_up: Idle, left_down: Idle, upkey_down: RunRightUp, upkey_up: RunRightDown,
-    #                downkey_down: RunRightDown, downkey_up: RunRightUp},
-    #     RunRightUp: {upkey_up: RunRight, right_up: RunUp, left_down: RunUp, downkey_down: RunRight},
-    #     RunUp: {upkey_up: Idle, left_down: RunLeftUp, downkey_down: Idle, right_down: RunRightUp,
-    #             left_up: RunRightUp, right_up: RunLeftUp},
-    #     RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft},
-    #     RunLeft: {left_up: Idle, upkey_down: RunLeftUp, right_down: Idle, downkey_down: RunLeftDown,
-    #               upkey_up: RunLeftDown, downkey_up: RunLeftUp},
-    #     RunLeftDown: {left_up: RunDown, downkey_up: RunLeft, upkey_down: RunLeft, right_down: RunDown},
-    #     RunDown: {downkey_up: Idle, left_down: RunLeftDown, upkey_down: Idle, right_down: RunRightDown,
-    #               left_up: RunRightDown, right_up: RunLeftDown},
-    #     RunRightDown: {right_up: RunDown, downkey_up: RunRight, left_down: RunDown, upkey_down: RunRight}
-    # }
     def start(self):
         self.cur_state.enter(self.hero, ('NONE', 0))
 
