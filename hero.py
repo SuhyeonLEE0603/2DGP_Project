@@ -45,9 +45,15 @@ def a_up(e):
 def s_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s
 
+def s_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s
+
 
 def d_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d
+
+def d_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d
 
 def skill_over(e):
     return e[0] == 'SKILL_OVER'
@@ -107,6 +113,73 @@ class Attack:
             hero.AttackImage[int(hero.attack_frame)].draw(hero.x + 10, hero.y + 75)
         else:
             hero.AttackImage[int(hero.attack_frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
+class RightAttack:
+
+    @staticmethod
+    def enter(hero, e):
+        global attack_bb
+
+        if right_down(e) or left_up(e):  # 오른쪽으로 RUN
+            hero.dir, hero.face_dir = 1, 1
+        attack_bb = skill.Attack_BB(hero.x, hero.y, hero.face_dir)
+        game_world.add_object(attack_bb)
+        game_world.add_collision_pair('attack:monster', attack_bb, None)
+        game_world.add_collision_pair('monster2_attack:hero_attack', attack_bb, None)
+        game_world.add_collision_pair('monster1_attack:hero_attack', attack_bb, None)
+        game_world.add_collision_pair('monster_skill:hero_attack', attack_bb, None)
+        pass
+
+    @staticmethod
+    def exit(hero, e):
+        if attack_bb in game_world.objects[0]:
+            game_world.remove_object(attack_bb)
+        hero.attack_frame = 0
+        hero.state_machine.prev_state = Attack
+        pass
+
+    @staticmethod
+    def do(hero):
+        hero.attack_frame = (hero.attack_frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 3
+        if hero.attack_frame > 2.9:
+            hero.state_machine.handle_event(('ATTACK_OVER', 0))
+
+    @staticmethod
+    def draw(hero):
+        hero.AttackImage[int(hero.attack_frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
+
+class LeftAttack:
+
+    @staticmethod
+    def enter(hero, e):
+        global attack_bb
+
+        if left_down(e) or right_up(e):  # 왼쪽으로 RUN
+            hero.dir, hero.face_dir = -1, -1
+        attack_bb = skill.Attack_BB(hero.x, hero.y, hero.face_dir)
+        game_world.add_object(attack_bb)
+        game_world.add_collision_pair('attack:monster', attack_bb, None)
+        game_world.add_collision_pair('monster2_attack:hero_attack', attack_bb, None)
+        game_world.add_collision_pair('monster1_attack:hero_attack', attack_bb, None)
+        game_world.add_collision_pair('monster_skill:hero_attack', attack_bb, None)
+        pass
+
+    @staticmethod
+    def exit(hero, e):
+        if attack_bb in game_world.objects[0]:
+            game_world.remove_object(attack_bb)
+        hero.attack_frame = 0
+        hero.state_machine.prev_state = Attack
+        pass
+
+    @staticmethod
+    def do(hero):
+        hero.attack_frame = (hero.attack_frame + FRAMES_PER_ATTACK * ACTION_PER_TIME * game_framework.frame_time) % 3
+        if hero.attack_frame > 2.9:
+            hero.state_machine.handle_event(('ATTACK_OVER', 0))
+
+    @staticmethod
+    def draw(hero):
+        hero.AttackImage[int(hero.attack_frame)].draw(hero.x + 10, hero.y + 75)
 
 
 class Skill2:
@@ -149,6 +222,139 @@ class Skill2:
         pass
 
 
+
+class RightSkill2:
+
+    @staticmethod
+    def enter(hero, e):
+        global skill2_bb
+
+        if right_down(e) or left_up(e):  # 오른쪽으로 RUN
+            hero.dir, hero.face_dir = 1, 1
+        if hero.skill_icon2.run:
+            print('스킬2 쿨타임')
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
+        else:
+            skill2_bb = skill.Skill2_BB(hero.x, hero.y, hero.face_dir)
+            game_world.add_object(skill2_bb)
+            game_world.add_collision_pair('skill2:monster', skill2_bb, None)
+
+
+    @staticmethod
+    def exit(hero, e):
+        if skill2_bb in game_world.objects[0]:
+            game_world.remove_object(skill2_bb)
+        hero.skill_frame = 0
+        hero.state_machine.prev_state = Skill
+        hero.skill_icon2.run_cool_time()
+        pass
+
+    @staticmethod
+    def do(hero):
+        hero.skill_frame = (hero.skill_frame + FRAMES_PER_SKILL2 * ACTION_PER_TIME * game_framework.frame_time)
+        if hero.skill_frame > 7:
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
+        pass
+
+    @staticmethod
+    def draw(hero):
+        hero.Skill2Image[int(hero.skill_frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
+
+
+
+class LeftSkill2:
+
+    @staticmethod
+    def enter(hero, e):
+        global skill2_bb
+
+        if left_down(e) or right_up(e):  # 왼쪽으로 RUN
+            hero.dir, hero.face_dir = -1, -1
+        if hero.skill_icon2.run:
+            print('스킬2 쿨타임')
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
+        else:
+            skill2_bb = skill.Skill2_BB(hero.x, hero.y, hero.face_dir)
+            game_world.add_object(skill2_bb)
+            game_world.add_collision_pair('skill2:monster', skill2_bb, None)
+
+
+    @staticmethod
+    def exit(hero, e):
+        if skill2_bb in game_world.objects[0]:
+            game_world.remove_object(skill2_bb)
+        hero.skill_frame = 0
+        hero.state_machine.prev_state = Skill
+        hero.skill_icon2.run_cool_time()
+        pass
+
+    @staticmethod
+    def do(hero):
+        hero.skill_frame = (hero.skill_frame + FRAMES_PER_SKILL2 * ACTION_PER_TIME * game_framework.frame_time)
+        if hero.skill_frame > 7:
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
+        pass
+
+    @staticmethod
+    def draw(hero):
+        hero.Skill2Image[int(hero.skill_frame)].draw(hero.x + 10, hero.y + 75)
+
+
+class LeftSkill:
+
+    @staticmethod
+    def enter(hero, e):
+        if left_down(e) or right_up(e):  # 왼쪽으로 RUN
+            hero.dir, hero.face_dir = -1, -1
+        if hero.skill_icon1.run:
+            print('스킬1 쿨타임')
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
+
+    @staticmethod
+    def exit(hero, e):
+        hero.skill_frame = 0
+        hero.fire()
+        pass
+
+    @staticmethod
+    def do(hero):
+        hero.skill_frame = (hero.skill_frame + FRAMES_PER_SKILL * ACTION_PER_TIME * game_framework.frame_time) % 5
+        if hero.skill_frame > 4.9:
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
+        pass
+
+    @staticmethod
+    def draw(hero):
+        hero.SkillImage[int(hero.skill_frame)].draw(hero.x + 10, hero.y + 75)
+
+class RightSkill:
+
+    @staticmethod
+    def enter(hero, e):
+        if right_down(e) or left_up(e):  # 오른쪽으로 RUN
+            hero.dir, hero.face_dir = 1, 1
+        if hero.skill_icon1.run:
+            print('스킬1 쿨타임')
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
+
+    @staticmethod
+    def exit(hero, e):
+        hero.skill_frame = 0
+        hero.fire()
+        pass
+
+    @staticmethod
+    def do(hero):
+        hero.skill_frame = (hero.skill_frame + FRAMES_PER_SKILL * ACTION_PER_TIME * game_framework.frame_time) % 5
+        if hero.skill_frame > 4.9:
+            hero.state_machine.handle_event(('SKILL_OVER', 0))
+        pass
+
+    @staticmethod
+    def draw(hero):
+        hero.SkillImage[int(hero.skill_frame)].composite_draw(math.radians(180), 'v', hero.x + 10, hero.y + 75)
+
+
 class Skill:
 
     @staticmethod
@@ -160,7 +366,6 @@ class Skill:
     @staticmethod
     def exit(hero, e):
         hero.skill_frame = 0
-        hero.state_machine.prev_state = Skill
         hero.fire()
         pass
 
@@ -257,18 +462,40 @@ class StateMachine:
         self.hero = hero
         self.cur_state = Stand
         self.perv_state = None
-        self.transitions = {
+        self.transitations = {
             Stand: {right_down: RightWalk, left_down: LeftWalk, left_up: RightWalk, right_up: LeftWalk, a_down: Attack,
-                    s_down: Skill, d_down: Skill2},
-            LeftWalk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: LeftWalk,
-                       a_down: Attack, s_down: Skill},
-            RightWalk: {right_down: Stand, left_down: Stand, right_up: Stand, left_up: Stand, space_down: RightWalk,
-                        a_down: Attack, s_down: Skill},
-            Attack: {right_down: RightWalk, left_down: LeftWalk, attack_over: Stand},
-            Skill: {right_down: RightWalk, left_down: LeftWalk, skill_over: Stand},
-            Skill2: {skill_over: Stand}
+                    s_down: Skill, d_down: Skill2, s_up: Stand},
+            LeftWalk: {right_down: Stand, left_up: Stand, a_down: LeftAttack,
+                       s_down: LeftSkill, s_up: LeftWalk, d_down: LeftSkill2, a_up: LeftWalk},
+            RightWalk: {left_down: Stand, right_up: Stand, a_down: RightAttack,
+                        s_down: RightSkill, d_down: RightSkill2},
+            Attack: {right_down: RightWalk, left_down: LeftWalk, attack_over: Stand, a_up: Stand},
+            LeftAttack: {left_up: RightWalk, a_up: LeftWalk, right_down: RightWalk, s_down: LeftSkill, d_down: LeftSkill2},
+            RightAttack: {right_up: LeftWalk, a_up: RightWalk, left_down: LeftWalk, s_down: RightSkill, d_down: RightSkill2},
+            Skill: {right_down: RightWalk, left_down: LeftWalk, right_up: LeftWalk, left_up: RightWalk, skill_over: Stand},
+            LeftSkill: {left_up: RightWalk, s_up: LeftWalk, right_down: RightWalk, a_down: LeftAttack, d_down: LeftSkill2},
+            RightSkill: {right_up: LeftWalk, s_up: RightWalk, left_down: LeftWalk, a_down: RightAttack, d_down: RightSkill2},
+            Skill2: {right_down: RightWalk, left_down: LeftWalk,right_up: LeftWalk, left_up: RightWalk,skill_over: Stand},
+            RightSkill2: {right_up: LeftWalk, d_up: RightWalk, left_down: LeftWalk, a_down: RightAttack, s_down: RightSkill},
+            LeftSkill2: {left_up: RightWalk, d_up: LeftWalk, right_down: RightWalk, a_down: LeftAttack, s_down: LeftSkill}
         }
 
+    # {
+    #     Idle: {right_down: RunRight, left_down: RunLeft, left_up: RunRight, right_up: RunLeft, upkey_down: RunUp,
+    #            downkey_down: RunDown, upkey_up: RunDown, downkey_up: RunUp},
+    #     RunRight: {right_up: Idle, left_down: Idle, upkey_down: RunRightUp, upkey_up: RunRightDown,
+    #                downkey_down: RunRightDown, downkey_up: RunRightUp},
+    #     RunRightUp: {upkey_up: RunRight, right_up: RunUp, left_down: RunUp, downkey_down: RunRight},
+    #     RunUp: {upkey_up: Idle, left_down: RunLeftUp, downkey_down: Idle, right_down: RunRightUp,
+    #             left_up: RunRightUp, right_up: RunLeftUp},
+    #     RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft},
+    #     RunLeft: {left_up: Idle, upkey_down: RunLeftUp, right_down: Idle, downkey_down: RunLeftDown,
+    #               upkey_up: RunLeftDown, downkey_up: RunLeftUp},
+    #     RunLeftDown: {left_up: RunDown, downkey_up: RunLeft, upkey_down: RunLeft, right_down: RunDown},
+    #     RunDown: {downkey_up: Idle, left_down: RunLeftDown, upkey_down: Idle, right_down: RunRightDown,
+    #               left_up: RunRightDown, right_up: RunLeftDown},
+    #     RunRightDown: {right_up: RunDown, downkey_up: RunRight, left_down: RunDown, upkey_down: RunRight}
+    # }
     def start(self):
         self.cur_state.enter(self.hero, ('NONE', 0))
 
@@ -276,7 +503,7 @@ class StateMachine:
         self.cur_state.do(self.hero)
 
     def handle_event(self, e):
-        for check_event, next_state in self.transitions[self.cur_state].items():
+        for check_event, next_state in self.transitations[self.cur_state].items():
             if check_event(e):
                 self.cur_state.exit(self.hero, e)
                 self.cur_state = next_state
