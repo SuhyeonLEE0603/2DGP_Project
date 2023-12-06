@@ -7,7 +7,7 @@ class Skill2Icon:
     def __init__(self):
 
         self.image = load_image(f"./source/Humans/Knight1/sprite/attack2/Skill_Icon2.png")
-        self.font = load_font('ENCR10B.TTF', 16)
+        self.font = load_font('./source/ENCR10B.TTF', 16)
         self.cool_time = 7
         self.run = False
 

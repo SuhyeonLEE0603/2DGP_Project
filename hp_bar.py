@@ -9,7 +9,7 @@ class Hp_bar:
 
     def __init__(self, object, monster_hp=400):
         self.hero_hp = 280
-        self.font = load_font('ENCR10B.TTF', 16)
+        self.font = load_font('./source/ENCR10B.TTF', 16)
         self.monster_hp = monster_hp
         if object == 0:
             self.max_hp = self.hero_hp
